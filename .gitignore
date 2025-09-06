@@ -2,7 +2,12 @@
 venv/
 .venv/
 env/
-cfd_solver_new/
+
+# Virtual env artifacts nested inside project dir
+cfd_solver_new/Lib/
+cfd_solver_new/Scripts/
+cfd_solver_new/Include/
+cfd_solver_new/pyvenv.cfg
 
 ### Python cache & artifacts
 __pycache__/
