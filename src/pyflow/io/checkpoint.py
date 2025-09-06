@@ -1,27 +1,25 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 """Lightweight simulation checkpoint I/O.
 
 Provides periodic persistence of full simulation state (fields + metadata)
-to enable post‑mortem analysis and restart after failure.
+to enable postmortem analysis and restart after failure.
 
 Format: NumPy .npz (portable, compressed) with keys:
-  meta: JSON‑serializable metadata dict (iteration, time, config hash)
+  meta: JSONserializable metadata dict (iteration, time, config hash)
   field_<name>: ndarray including ghost layers
 
 Design Goals:
   * Zero external dependencies beyond NumPy
   * Atomic write (write to temp then rename) to avoid partial corruption
-  * Backwards compatible – absence of file or fields handled gracefully
+  * Backwards compatible  absence of file or fields handled gracefully
 """
 from dataclasses import asdict
-import json
-import os
-import tempfile
-import hashlib
+import json, os, tempfile, hashlib, io
 from typing import Any, Dict, cast
 import numpy as np
 
 from ..core.ghost_fields import State
+
 
 def _hash_config(cfg: Any) -> str:
     try:
@@ -34,11 +32,19 @@ def _hash_config(cfg: Any) -> str:
     except Exception:
         return 'unknown'
 
+
 def _hash_array(arr: np.ndarray) -> str:
     h = hashlib.sha1(arr.tobytes()).hexdigest()
     return h[:16]
 
+
 def save_checkpoint(path: str, state: State, iteration: int, sim_time: float, cfg: Any) -> str:
+    """Atomically persist simulation state.
+
+    We write to a temporary file, flush & fsync, then os.replace to final path.
+    This avoids partially written (zerolength / truncated) archives that can
+    surface as EOFError during np.load under fast successive read/write cycles.
+    """
     os.makedirs(os.path.dirname(path) or '.', exist_ok=True)
     field_hashes = {k: _hash_array(v) for k, v in state.fields.items()}
     meta: Dict[str, Any] = {
@@ -52,12 +58,16 @@ def save_checkpoint(path: str, state: State, iteration: int, sim_time: float, cf
         'schema_version': 1,
     }
     tmp_fd, tmp_path = tempfile.mkstemp(suffix='.tmp', dir=os.path.dirname(path) or '.')
-    os.close(tmp_fd)
     try:
-        arrays = {f"field_{k}": v for k, v in state.fields.items()}
-        # Use a cast to silence strict type analysis confusion about **kwargs
-        saver = cast(Any, np.savez_compressed)
-        saver(tmp_path, meta=json.dumps(meta), **arrays)
+        with os.fdopen(tmp_fd, 'wb') as f:
+            arrays = {f"field_{k}": v for k, v in state.fields.items()}
+            saver = cast(Any, np.savez_compressed)
+            saver(f, meta=json.dumps(meta), **arrays)
+            f.flush()
+            try:
+                os.fsync(f.fileno())
+            except OSError:
+                pass
         os.replace(tmp_path, path)
     finally:
         if os.path.exists(tmp_path):
@@ -66,6 +76,7 @@ def save_checkpoint(path: str, state: State, iteration: int, sim_time: float, cf
             except Exception:
                 pass
     return path
+
 
 def load_checkpoint(path: str) -> tuple[State, Dict[str, Any]]:
     with np.load(path) as data:
