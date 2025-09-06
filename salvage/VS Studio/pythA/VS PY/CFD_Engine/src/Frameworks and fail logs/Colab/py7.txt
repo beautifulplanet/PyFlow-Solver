@@ -1,0 +1,123 @@
+Of course. After a detailed review of your solver's code and the conversation history, I can confirm your diagnosis is correct. The persistent plateau in your residuals is a classic symptom of a subtle but critical bug in the boundary condition implementation.
+
+You were right to suspect the simple zero-gradient extrapolation for the outlet velocity in the calculate_continuity_residual function. Here’s a deeper look at why that's the problem and how to fix it.
+
+The Root Cause: Pressure-Velocity Decoupling at the Outlet
+The core issue is an inconsistency between how your solver handles the velocity and the pressure at the outlet boundary.
+
+The Pressure Condition: You've set a "zero gauge pressure" outlet. In the SIMPLE algorithm, this means the pressure correction (p') at the outlet must be zero. The solver is not allowed to adjust the pressure there.
+
+The Velocity Condition: In your calculate_continuity_residual_actual_vectorized function, the velocity at the outlet face is calculated with a simple extrapolation: u_face_e_star[:, -1] = u_star_field[:, -1].
+
+The Conflict: This simple velocity extrapolation doesn't account for the fixed pressure condition. As a result, the mass flux calculated at the outlet creates a continuity error (a non-zero residual). The solver's natural response is to create a pressure correction (p') to fix this error. However, the boundary condition forbids any pressure correction at the outlet.
+
+The solver is caught in a loop: it sees a mass imbalance, wants to fix it with pressure, but is not allowed to. This conflict prevents the continuity residual from ever reaching zero, causing the plateau you're observing. This is a form of pressure-velocity decoupling right at the boundary.
+
+The Solution: Enforce Global Mass Conservation
+Instead of a simple local extrapolation, the professional way to handle this is to enforce that the mass leaving the domain is exactly equal to the mass entering it.
+
+The fix involves modifying the calculate_continuity_residual_actual_vectorized function to perform a global mass flow correction. We will:
+
+Calculate the total mass flux coming in through the inlet.
+
+Calculate the total mass flux leaving the outlet based on the simple extrapolation.
+
+Calculate the difference (the global mass imbalance).
+
+Distribute this difference as a small correction to all the outlet face velocities, ensuring that mass_in = mass_out.
+
+This approach makes the velocity field at the outlet consistent with the inlet conditions and the overall continuity equation, resolving the conflict and allowing the residuals to converge properly.
+
+I've implemented this fix in an updated version of your solver code. This is a significant change, so I've placed it in a new document for clarity.
+
+
+
+
+
+
+
+
+
+
+import numpy as np
+from scipy.sparse import lil_matrix, csr_matrix
+from scipy.sparse.linalg import bicgstab, cg, LinearOperator
+import matplotlib.pyplot as plt
+
+# Helper functions for interpolation (for collocated grid)
+def interpolate_face_velocity(phi_cell1, phi_cell2):
+    """Simple linear interpolation to face center."""
+    return 0.5 * (phi_cell1 + phi_cell2)
+
+def calculate_continuity_residual_actual_vectorized(u_star_field, v_star_field, rho, grid, U_in):
+    """
+    Calculates the continuity residual for each control volume based on u* and v*,
+    using vectorized operations and applying a global mass flow correction at the outlet.
+    """
+    n_cells_x = grid.n_cells_x
+    n_cells_y = grid.n_cells_y
+    continuity_residual = np.zeros((n_cells_y, n_cells_x))
+
+    Area_ew = grid.Area_ew
+    Area_ns = grid.Area_ns
+
+    # --- Calculate Mass Fluxes across Faces (Vectorized) ---
+
+    # West Face (Inlet)
+    u_face_w_star = np.zeros((n_cells_y, n_cells_x))
+    inlet_y_indices = np.where(grid.y_cc[:, 0] <= grid.Ly_in + 1e-9)[0]
+    u_face_w_star[inlet_y_indices, 0] = U_in
+    u_face_w_star[:, 1:] = interpolate_face_velocity(u_star_field[:, :-1], u_star_field[:, 1:])
+    Mass_w = rho * u_face_w_star * Area_ew
+
+    # East Face (Outlet) - Initial Calculation
+    u_face_e_star = np.zeros((n_cells_y, n_cells_x))
+    u_face_e_star[:, :-1] = interpolate_face_velocity(u_star_field[:, :-1], u_star_field[:, 1:])
+    u_face_e_star[:, -1] = u_star_field[:, -1] # Simple extrapolation
+    Mass_e_initial = rho * u_face_e_star * Area_ew
+
+    # --- Global Mass Flow Correction (The Fix) ---
+    total_mass_in = np.sum(Mass_w[:, 0])
+    total_mass_out_initial = np.sum(Mass_e_initial[:, -1])
+    mass_imbalance = total_mass_in - total_mass_out_initial
+
+    # Correct the outlet face velocities to enforce global mass conservation
+    # This distributes the imbalance across the outlet faces.
+    # A simple correction is to add the average imbalance.
+    # A more robust way (if outlet profile shape is important) is to scale.
+    if np.abs(total_mass_out_initial) > 1e-12: # Avoid division by zero
+        correction_factor = total_mass_in / total_mass_out_initial
+        u_face_e_star[:, -1] *= correction_factor
+    
+    Mass_e = rho * u_face_e_star * Area_ew
+    # --- End of Fix ---
+
+    # South Face (Bottom Wall)
+    v_face_s_star = np.zeros((n_cells_y, n_cells_x))
+    v_face_s_star[1:, :] = interpolate_face_velocity(v_star_field[:-1, :], v_star_field[1:, :])
+    v_face_s_star[0, :] = 0.0
+    Mass_s = rho * v_face_s_star * Area_ns
+
+    # North Face (Top Wall)
+    v_face_n_star = np.zeros((n_cells_y, n_cells_x))
+    v_face_n_star[:-1, :] = interpolate_face_velocity(v_star_field[:-1, :], v_star_field[1:, :])
+    v_face_n_star[-1, :] = 0.0
+    Mass_n = rho * v_face_n_star * Area_ns
+
+    # Continuity Residual (Mass imbalance = Mass_in - Mass_out)
+    continuity_residual = (Mass_w + Mass_s) - (Mass_e + Mass_n)
+
+    # For cells outside the fluid domain (top-left corner), set residual to 0
+    is_expansion_wall_cell = np.zeros((n_cells_y, n_cells_x), dtype=bool)
+    is_expansion_wall_cell[np.where(grid.Y_cc > grid.Ly_in + 1e-9)[0][:, np.newaxis],
+                           np.where(grid.X_cc < grid.Lx_expansion - 1e-9)[0]] = True
+    continuity_residual[is_expansion_wall_cell] = 0.0
+
+    return continuity_residual
+
+# NOTE: The other functions (assemble_momentum_matrix, assemble_pressure_correction_matrix,
+# update_velocity_from_pressure_correction, and solve) remain the same as in your
+# last working version. This change is targeted only at the continuity residual calculation.
+# You would replace your existing `calculate_continuity_residual_actual_vectorized`
+# function with this new version.
+

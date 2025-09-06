@@ -1,0 +1,6 @@
+# Minimal dependencies for playground and authoring helpers
+# Pin broadly compatible versions.
+numpy>=1.24,<3
+PyYAML>=6.0,<7  # for config_schema_validator.py
+nbformat>=5.10,<6  # for notebook summaries
+pytest>=8.0,<9  # for test suite

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "nx": 65,
+  "ny": 65,
+  "lx": 1.0,
+  "ly": 1.0,
+  "Re": 100.0,
+  "solver": "physical",
+  "max_iter": 2000,
+  "tol": 1e-5,
+  "cfl_target": 0.5,
+  "cfl_growth": 1.1,
+  "lin_tol": 1e-10,
+  "lin_maxiter": 800,
+  "lid_velocity": 1.0,
+  "disable_advection": false,
+  "test_mode": false,
+  "keep_lid_corners": true,
+  "advection_scheme": "quick"
+}

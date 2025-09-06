@@ -1,0 +1,37 @@
+Based on the code you provided in the `pycfdflow2_v2 (1).py` file, the `IndentationError` occurs because the `def run_simulation(...)` line is incorrectly indented. It is currently inside the `Solver` class, where it does not belong.
+
+The fix is to **unindent** the `run_simulation` function so it is defined at the top level of the script, completely outside of the `Solver` class.
+
+### Corrected Code
+
+Here is the corrected structure. Apply this change to your file.
+
+```python
+# ... (Code for Grid, Core, and Solver classes remains here) ...
+
+class Solver:
+    """
+    Main solver class for the 2D incompressible Navier-Stokes equations.
+    """
+    def __init__(self, grid, rho, nu):
+        # ... (contents of __init__) ...
+
+    def set_boundary_conditions(self):
+        # ... (contents of set_boundary_conditions) ...
+    
+    # ... (other methods of the Solver class like solve_momentum_predictor) ...
+
+# CORRECTED: This function must be unindented to be outside the Solver class.
+def run_simulation(Nx, Ny, Lx, Ly, rho, nu, dt, total_time):
+    """
+    Sets up and runs the Lid-Driven Cavity simulation.
+    """
+    # ... (contents of run_simulation) ...
+
+# The main execution block
+if __name__ == "__main__":
+    run_simulation(Nx=100, Ny=100, Lx=1.0, Ly=1.0, rho=1.0, nu=0.01, dt=0.001, total_time=0.1)
+
+```
+
+This is a fundamental syntax rule in Python. The indentation level defines the scope of classes and functions. Clean, correct indentation is not optional. Fix it and proceed.

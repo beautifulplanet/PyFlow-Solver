@@ -1,0 +1,202 @@
+[
+  {
+    "signature": "execute(self,node)",
+    "count": 450
+  },
+  {
+    "signature": "interpret(self,ast)",
+    "count": 446
+  },
+  {
+    "signature": "evaluate(self,node)",
+    "count": 446
+  },
+  {
+    "signature": "__init__(self)",
+    "count": 432
+  },
+  {
+    "signature": "__init__(self,tokens)",
+    "count": 422
+  },
+  {
+    "signature": "parse(self)",
+    "count": 422
+  },
+  {
+    "signature": "parse_expression(self)",
+    "count": 422
+  },
+  {
+    "signature": "parse_statement(self)",
+    "count": 420
+  },
+  {
+    "signature": "current(self)",
+    "count": 398
+  },
+  {
+    "signature": "consume(self,type)",
+    "count": 398
+  },
+  {
+    "signature": "tokenize(code)",
+    "count": 368
+  },
+  {
+    "signature": "__repr__(self)",
+    "count": 366
+  },
+  {
+    "signature": "__init__(self,value)",
+    "count": 344
+  },
+  {
+    "signature": "__str__(self)",
+    "count": 320
+  },
+  {
+    "signature": "get_value(self)",
+    "count": 318
+  },
+  {
+    "signature": "__add__(self,other)",
+    "count": 318
+  },
+  {
+    "signature": "__sub__(self,other)",
+    "count": 318
+  },
+  {
+    "signature": "__mul__(self,other)",
+    "count": 318
+  },
+  {
+    "signature": "__truediv__(self,other)",
+    "count": 318
+  },
+  {
+    "signature": "__lt__(self,other)",
+    "count": 318
+  },
+  {
+    "signature": "__eq__(self,other)",
+    "count": 318
+  },
+  {
+    "signature": "__le__(self,other)",
+    "count": 298
+  },
+  {
+    "signature": "__ne__(self,other)",
+    "count": 298
+  },
+  {
+    "signature": "__gt__(self,other)",
+    "count": 298
+  },
+  {
+    "signature": "__ge__(self,other)",
+    "count": 298
+  },
+  {
+    "signature": "get_scale(number,tolerance)",
+    "count": 260
+  },
+  {
+    "signature": "generate_name_and_abbreviation(number)",
+    "count": 260
+  },
+  {
+    "signature": "add_finity(nN,nN)",
+    "count": 260
+  },
+  {
+    "signature": "sub_finity(nN,nN)",
+    "count": 260
+  },
+  {
+    "signature": "mul_finity(nN,nN)",
+    "count": 260
+  },
+  {
+    "signature": "div_finity(nN,nN)",
+    "count": 260
+  },
+  {
+    "signature": "parse_return_statement(self)",
+    "count": 164
+  },
+  {
+    "signature": "call_function(self,name,arguments)",
+    "count": 106
+  },
+  {
+    "signature": "generate_name_and_abbreviation(number,scale_ranges)",
+    "count": 86
+  },
+  {
+    "signature": "from_finity_name_or_abbreviation(finity_string,scale_ranges)",
+    "count": 86
+  },
+  {
+    "signature": "get_scale(number,scale_ranges,tolerance)",
+    "count": 62
+  },
+  {
+    "signature": "get_scale(number,scale_ranges)",
+    "count": 60
+  },
+  {
+    "signature": "__init__(self,type,value,children)",
+    "count": 46
+  },
+  {
+    "signature": "parse_operand(self)",
+    "count": 46
+  },
+  {
+    "signature": "add_finity_numbers(numN,numN,cosmos_limit)",
+    "count": 40
+  },
+  {
+    "signature": "subtract_finity_numbers(numN,numN,cosmos_limit)",
+    "count": 40
+  },
+  {
+    "signature": "multiply_finity_numbers(numN,numN,cosmos_limit)",
+    "count": 40
+  },
+  {
+    "signature": "divide_finity_numbers(numN,numN,cosmos_limit)",
+    "count": 40
+  },
+  {
+    "signature": "to_finity_name(number,scale_ranges)",
+    "count": 36
+  },
+  {
+    "signature": "to_finity_abbreviation(number,scale_ranges)",
+    "count": 36
+  },
+  {
+    "signature": "execute_block(self,block_node)",
+    "count": 32
+  },
+  {
+    "signature": "evaluate_function_call(self,node)",
+    "count": 30
+  },
+  {
+    "signature": "assemble_pressure_correction_matrix(grid,rho,u,v,ap_u,ap_v)",
+    "count": 29
+  },
+  {
+    "signature": "__init__(self,finity_framework_functions,scale_ranges,cosmos_limit)",
+    "count": 28
+  },
+  {
+    "signature": "builtin_print_message(self,message)",
+    "count": 28
+  }
+]

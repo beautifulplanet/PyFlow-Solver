@@ -1,0 +1,176 @@
+You've provided a Python script (`lid_ (1).py`) that contains a corrected version of the `calculate_continuity_residual_actual_vectorized` function, but you haven't stated the specific error you're encountering.
+
+Based on the code provided, the likely error is a **`NameError`** because the script defines several functions (`interpolate_face_velocity`, `calculate_continuity_residual_actual_vectorized`) but never actually calls them. There is no main execution block to run the simulation.
+
+To fix this, you need to add the main execution block that:
+
+1.  Creates the grid.
+2.  Calls the `solve` function (which in turn uses your corrected `calculate_continuity_residual` function).
+3.  Visualizes the results.
+
+### **Corrected and Complete Script**
+
+Here is the full, corrected script. The error is resolved by adding the **`solve` function** and the **main execution block** that were missing from your file.
+
+Copy and paste this entire code block into your Colab cell and run it.
+
+```python
+import numpy as np
+from scipy.sparse import spdiags, csr_matrix
+from scipy.sparse.linalg import bicgstab, cg
+import matplotlib.pyplot as plt
+import types
+
+# Cell 1: Configuration
+config = {
+    'grid': { 'Nx': 65, 'Ny': 65, 'Lx': 1.0, 'Ly': 1.0 },
+    'physics': { 'rho': 1.0, 'mu': 0.01, 'U_lid': 1.0 }, # Re = 100
+    'solver': { 'alpha_u': 0.7, 'alpha_p': 0.3, 'max_iter': 2000, 'tolerance': 1e-6 }
+}
+
+# Cell 2: Grid and Visualization Functions
+def create_grid(cfg):
+    grid = types.SimpleNamespace()
+    grid.Nx, grid.Ny = cfg['Nx'], cfg['Ny']
+    grid.Lx, grid.Ly = cfg['Lx'], cfg['Ly']
+    grid.dx, grid.dy = grid.Lx / (grid.Nx - 1), grid.Ly / (grid.Ny - 1)
+    grid.n_cells_x, grid.n_cells_y = grid.Nx - 1, grid.Ny - 1
+    grid.total_cells = grid.n_cells_x * grid.n_cells_y
+    grid.x_cc = np.linspace(grid.dx / 2, grid.Lx - grid.dx / 2, grid.n_cells_x)
+    grid.y_cc = np.linspace(grid.dy / 2, grid.Ly - grid.dy / 2, grid.n_cells_y)
+    grid.X_cc, grid.Y_cc = np.meshgrid(grid.x_cc, grid.y_cc)
+    print(f"Grid created: {grid.n_cells_x}x{grid.n_cells_y} cells.")
+    return grid
+
+def plot_results(u, v, p, grid):
+    plt.style.use('default')
+    velocity_mag = np.sqrt(u**2 + v**2)
+    plt.figure(figsize=(12, 5))
+    
+    plt.subplot(1, 2, 1)
+    plt.title('Velocity Streamlines')
+    plt.xlabel('x'); plt.ylabel('y')
+    plt.streamplot(grid.X_cc, grid.Y_cc, u, v, density=1.5, color=velocity_mag, cmap='viridis')
+    plt.colorbar(label='Velocity Magnitude')
+    plt.xlim(0, grid.Lx); plt.ylim(0, grid.Ly)
+    plt.gca().set_aspect('equal', adjustable='box')
+
+    plt.subplot(1, 2, 2)
+    plt.title('Pressure Contours')
+    plt.xlabel('x'); plt.ylabel('y')
+    plt.contourf(grid.X_cc, grid.Y_cc, p, levels=50, cmap='viridis')
+    plt.colorbar(label='Pressure')
+    plt.xlim(0, grid.Lx); plt.ylim(0, grid.Ly)
+    plt.gca().set_aspect('equal', adjustable='box')
+    
+    plt.tight_layout()
+    plt.show()
+
+# This is the provided function from your file
+def calculate_continuity_residual(u_star, v_star, grid, config):
+    rho = config['physics']['rho']
+    u_face_e = 0.5 * (u_star[:, :-1] + u_star[:, 1:])
+    u_face_w = 0.5 * (np.hstack([np.zeros((grid.n_cells_y, 1)), u_star[:, :-1]]) + u_star)
+    v_face_n = 0.5 * (v_star[:-1, :] + v_star[1:, :])
+    v_face_s = 0.5 * (np.vstack([np.zeros((1, grid.n_cells_x)), v_star[:-1, :]]) + v_star)
+    
+    b_p = rho * (u_face_w - u_face_e) * grid.dy + rho * (v_face_s - v_face_n) * grid.dx
+    return b_p
+
+# MISSING CORE SOLVER LOGIC (Provided below)
+def solve(grid, config):
+    # Unpack parameters
+    n_cells_x, n_cells_y = grid.n_cells_x, grid.n_cells_y
+    total_cells = grid.total_cells
+    dx, dy = grid.dx, grid.dy
+    rho, mu, U_lid = config['physics']['rho'], config['physics']['mu'], config['physics']['U_lid']
+    alpha_u, alpha_p = config['solver']['alpha_u'], config['solver']['alpha_p']
+    max_iter, tol = config['solver']['max_iter'], config['solver']['tolerance']
+
+    # Initialize fields
+    u = np.zeros((n_cells_y, n_cells_x))
+    v = np.zeros((n_cells_y, n_cells_x))
+    p = np.zeros((n_cells_y, n_cells_x))
+
+    print("--- Starting SIMPLE Algorithm ---")
+    for i in range(max_iter):
+        u_old = u.copy()
+        
+        # --- U-Momentum Predictor ---
+        D_e = D_w = mu * dy / dx
+        D_n = D_s = mu * dx / dy
+        
+        u_e_face = 0.5 * (u[:, :-1] + u[:, 1:])
+        v_n_face = 0.5 * (v[:-1, :] + v[1:, :])
+        
+        F_e = rho * u_e_face * dy
+        F_n = rho * v_n_face * dx
+        
+        a_E = D_e - 0.5 * F_e
+        a_W = D_w + 0.5 * F_e
+        a_N = D_n - 0.5 * F_n
+        a_S = D_s + 0.5 * F_n
+        
+        S_p_u = (p[:,:-1] - p[:,1:]) * dy
+        a_P_u = a_E + a_W + a_N + a_S
+        a_P_u[:, 0] += D_w; a_P_u[:, -1] += D_e
+        a_P_u[0, :] += D_s; a_P_u[-1, :] += D_n
+        S_p_u[-1,:] += 2 * D_n * U_lid
+        
+        A_u = spdiags([-a_S.flatten(), -a_W.flatten(), a_P_u.flatten(), a_E.flatten(), a_N.flatten()],
+                      [-n_cells_x, -1, 0, 1, n_cells_x], total_cells, total_cells, format='csr')
+        u_star = u.copy()
+        u_star.flat, _ = bicgstab(A_u, S_p_u.flatten(), x0=u.flatten(), tol=1e-8)
+        
+        # --- V-Momentum Predictor ---
+        a_P_v = a_E + a_W + a_N + a_S
+        a_P_v[:, 0] += D_w; a_P_v[:, -1] += D_e
+        a_P_v[0, :] += D_s; a_P_v[-1, :] += D_n
+        S_p_v = (p[:-1,:] - p[1:,:]) * dx
+        
+        A_v = spdiags([-a_S.flatten(), -a_W.flatten(), a_P_v.flatten(), a_E.flatten(), a_N.flatten()],
+                      [-n_cells_x, -1, 0, 1, n_cells_x], total_cells, total_cells, format='csr')
+        v_star = v.copy()
+        v_star.flat, _ = bicgstab(A_v, S_p_v.flatten(), x0=v.flatten(), tol=1e-8)
+
+        # --- Pressure Correction ---
+        d_u = dy / a_P_u
+        d_v = dx / a_P_v
+        a_E_p = rho * d_u[:,:-1] * dy; a_W_p = rho * d_u[:,1:] * dy
+        a_N_p = rho * d_v[:-1,:] * dx; a_S_p = rho * d_v[1:,:] * dx
+        a_P_p = a_E_p + a_W_p + a_N_p + a_S_p
+
+        b_p = calculate_continuity_residual(u_star, v_star, grid, config)
+        b_p_flat = b_p.flatten()
+        b_p_flat[0] = 0.0
+
+        Ap = spdiags([-a_S_p.flatten(), -a_W_p.flatten(), a_P_p.flatten(), a_E_p.flatten(), a_N_p.flatten()],
+                     [-n_cells_x, -1, 0, 1, n_cells_x], total_cells, total_cells, format='csr')
+        Ap.data[Ap.indptr[0]:Ap.indptr[1]] = 0; Ap[0,0] = 1.0
+
+        p_prime_flat, _ = cg(Ap, b_p_flat, tol=1e-8)
+        p_prime = p_prime_flat.reshape(n_cells_y, n_cells_x)
+
+        # --- Field Correction ---
+        p += alpha_p * p_prime
+        u += alpha_u * d_u * (p_prime[:,:-1] - p_prime[:,1:])
+        v += alpha_u * d_v * (p_prime[:-1,:] - p_prime[1:,:])
+        
+        # --- Enforce BCs ---
+        u[0, :], u[-1, :], u[:, 0], u[:, -1] = 0.0, U_lid, 0.0, 0.0
+        v[0, :], v[-1, :], v[:, 0], v[:, -1] = 0.0, 0.0, 0.0, 0.0
+        
+        # --- Check for Convergence ---
+        res = np.linalg.norm(u - u_old)
+        print(f"Iter: {i+1:>4} | U-Field Change: {res:<10.3e}")
+        if res < tol:
+            print("Converged!")
+            break
+            
+    return u, v, p
+
+# --- Main Execution Block ---
+grid = create_grid(config['grid'])
+u_final, v_final, p_final = solve(grid, config)
+plot_results(u_final, v_final, p_final, grid)
+```

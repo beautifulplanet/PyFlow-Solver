@@ -1,0 +1,61 @@
+This new error points to the same underlying issue as before, but at a different location. The problem is still in your interpreter's **lexer** (or tokenizer).
+
+The error `Illegal character: ~ at pos 5` indicates that your lexer doesn't recognize the character `~` as the start of a valid token. It's failing on the very first part of your variable declaration keyword, `~@`.
+
+-----
+
+### \#\# Diagnosis ⚙️
+
+Your lexer is responsible for scanning the code and grouping characters into meaningful tokens. When it encountered `~@ num_a => 100;`, it saw the `~` character and immediately stopped because it has no rule defined for it.
+
+Just as it previously failed to see `+|>` as a single operator, it's now failing to see `~@` as a single keyword. The lexer must be explicitly taught to recognize **all** of your language's special multi-character sequences.
+
+-----
+
+### \#\# The Solution
+
+You need to add a rule to your lexer to identify the `~@` sequence as a single `DECLARATION` token.
+
+**Conceptual Lexer Logic (in pseudocode):**
+
+```
+function getNextToken(source_code):
+  // ... other rules for whitespace, numbers, etc. ...
+
+  char = source_code.peek()
+
+  if char is '~':
+    if source_code.peek_next_char() == '@':
+      source_code.consume(2) // Consume both characters
+      return new Token(type: 'DECLARATION_KEYWORD', value: '~@')
+    else:
+      // A '~' by itself is not valid in your language
+      throw new Error("Illegal character: ~")
+
+  if char is '=':
+    if source_code.peek_next_char() == '>':
+      source_code.consume(2) // Consume both characters
+      return new Token(type: 'ASSIGNMENT_OPERATOR', value: '=>')
+    // ... handle other cases ...
+
+  // ... other rules for +|>, *><, etc. ...
+```
+
+### \#\# The Bigger Picture
+
+You've now run into two similar "illegal character" errors. To fix this comprehensively, you should define all of your language's unique, multi-character tokens in your lexer at once.
+
+Based on your source code, your lexer needs to recognize:
+
+  * **Declaration:** `~@`
+  * **Assignment:** `=>`
+  * **Custom Addition:** `+|>`
+  * **Custom Multiplication:** `*><`
+
+By defining all of these upfront, you'll create a robust lexer that can correctly tokenize your entire program, allowing the **parser** (the next stage of the interpreter) to do its job.
+
+Once the lexer is fully corrected, the program's logic remains the same, and the expected final state will be **`num_a = 300`** and **`num_b = 150`**.
+
+
+
+

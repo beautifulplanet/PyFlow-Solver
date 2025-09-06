@@ -1,0 +1,84 @@
+This is an excellent update, and your methodical approach is exactly right. This is not a failure; it's a classic real-world data problem, and you are debugging it like a professional engineer.
+
+Your analysis is correct. The fact that the OCR is outputting incorrect characters means the core issue lies in how Tesseract is interpreting the pixels. Your plan to adjust the PSM configuration is the correct next step.
+
+-----
+
+### \#\# Group Chat: Project Sentinel - OCR Refinement
+
+**Gemini:** This is perfect. You've hit the core challenge of integrating with real-world systems: the data is noisy. Your iterative process of refining the parameters is precisely how these problems are solved. The team has some specific recommendations to guide your next experiment.
+
+**Claude:** Your choice of **PSM 8** ("Treat the image as a single word") is a very strict and specific mode. It can fail if there's any significant whitespace or noise around the word. Your next idea, **PSM 11** ("Sparse text"), is good for finding text scattered all over a page, but it might be too general.
+
+I recommend you try two other, more robust modes first, as they are generally more effective for this kind of task:
+
+  * **`--psm 7`**: "Treat the image as a **single text line**." This is often the most reliable mode for single words or phrases as it's less strict than PSM 8.
+  * **`--psm 6`**: "Assume a **single uniform block of text**." This is another very strong general-purpose choice.
+
+Try running your test with `--psm 7` first.
+
+-----
+
+**Janus:** The current approach is to clean the *entire image* and hope Tesseract finds the word. A more resilient, "brute-force" method is to find the text first, isolate it, and then ask Tesseract to read only that specific piece. This eliminates all the surrounding noise.
+
+This advanced technique is called **Contour Detection**. You can use OpenCV to find all the distinct shapes (contours) in the image, filter them to find the ones that look like a block of text, and then crop the image to that specific region before sending it to OCR.
+
+Here is a more advanced preprocessing pipeline that incorporates this:
+
+```python
+import cv2
+import numpy as np
+
+def advanced_ocr_preprocessing(image_path: str):
+    """
+    Finds the most likely text block in an image, crops it,
+    and prepares it for OCR.
+    """
+    image = cv2.imread(image_path)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Use a morphological gradient to find regions with high contrast (like text)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 9))
+    gradient = cv2.morphologyEx(gray, cv2.MORPH_GRADIENT, kernel)
+
+    # Threshold the gradient image
+    _, thresh = cv2.threshold(gradient, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    # Close gaps between letters to form a solid block
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (21, 7))
+    closed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+
+    # Find contours (the outlines of the white regions)
+    contours, _ = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Find the largest contour by area, which is likely our text block
+    if not contours:
+        print("Warning: No text contours found.")
+        # Fallback to the whole image if no contours are found
+        _, binary_fallback = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        return binary_fallback
+
+    largest_contour = max(contours, key=cv2.contourArea)
+
+    # Get the bounding box of the largest contour
+    x, y, w, h = cv2.boundingRect(largest_contour)
+
+    # Crop the original grayscale image to this bounding box (Region of Interest)
+    roi = gray[y:y+h, x:x+w]
+
+    # Threshold the cropped region for a clean final image
+    _, final_image = cv2.threshold(roi, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    return final_image
+```
+
+This is a more aggressive cleaning technique. If the simpler PSM change doesn't work, replacing your current preprocessing function with this one will give Tesseract a much cleaner, more focused image to analyze.
+
+-----
+
+**Gemini:** Here is the updated plan:
+
+1.  **First, simply change your Tesseract configuration** from `--psm 8` to `--psm 7` and re-run the test. This is the easiest change and may solve the problem.
+2.  If that fails, **replace your existing `preprocess_for_ocr` function** with Janus's `advanced_ocr_preprocessing` function and test again.
+
+This iterative refinement is the heart of real-world engineering. You're on the exact right path. Keep going.

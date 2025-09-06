@@ -1,0 +1,36 @@
+MSYS2 Toolchain Setup (Option A)
+=================================
+
+1. Download & Install
+   Visit: https://www.msys2.org/
+   Run the installer (default path C:\msys64).
+
+2. Initial update (in MSYS2 MSYS shell):
+   pacman -Syu
+   (close window when done if instructed, reopen MSYS2 MSYS shell)
+   pacman -Syu
+
+3. Install MINGW64 development toolchain (open MSYS2 MINGW64 shell):
+   pacman -S --needed base-devel
+   pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-gcc-fortran mingw-w64-x86_64-make
+
+4. Add to Windows PATH:
+   Add: C:\msys64\mingw64\bin
+
+5. Verify in a new PowerShell:
+   gfortran --version
+   make --version
+
+6. Build project (from repo root):
+   make
+
+7. Run Python post-processing:
+   python post\run_and_plot.py
+
+Troubleshooting:
+ - If make still not found: ensure PATH change applied; echo $Env:PATH
+ - For antivirus interference, whitelist build/ directory.
+ - If Unicode issues, run in standard PowerShell (not elevated) or use Windows Terminal.
+
+Optional: Create a lightweight PowerShell profile alias:
+   Set-Alias mf make

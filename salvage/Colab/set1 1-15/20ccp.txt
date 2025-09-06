@@ -1,0 +1,106 @@
+I was unable to access the content of the file you uploaded.
+
+To help you, please **paste the relevant Python code** from your `cpsail_c_prototype_ (2).py` file directly into the chat. I need to see the `TextRecognitionOperator` class and the `pytest` script you're using.
+
+However, the problem "keeps not seeing text properly" is extremely common in OCR tasks. The issue is almost always a lack of **image preprocessing**. Raw images are often too "noisy" for an OCR engine like Tesseract to read accurately.
+
+Here is a masterclass guide to fixing it.
+
+-----
+
+### \#\# Diagnosis and Solution
+
+Your tests are likely failing because you are feeding a raw image directly into the OCR engine. You must clean the image first to make the text as clear as possible.
+
+Here is the standard, professional workflow for robust text recognition.
+
+### \#\#\# Step 1: Install OpenCV
+
+If you haven't already, you'll need the premier library for image manipulation, OpenCV.
+
+```bash
+pip install opencv-python
+```
+
+### \#\#\# Step 2: Implement a Preprocessing Pipeline
+
+Before calling `pytesseract`, you must process the image. Here's a function that includes the most effective techniques.
+
+```python
+import cv2
+import pytesseract
+
+def preprocess_for_ocr(image_path: str):
+    """
+    Loads an image and applies a standard preprocessing pipeline
+    to make it suitable for OCR.
+    """
+    # 1. Load the image
+    image = cv2.imread(image_path)
+
+    # 2. Convert to Grayscale
+    # Color information is not useful for OCR and can introduce noise.
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # 3. Apply Thresholding
+    # This is the most critical step. It converts the image to pure
+    # black and white, making the characters stand out.
+    _, binary_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    # 4. Apply a slight blur to remove noise
+    # This removes small, random specks that can be mistaken for characters.
+    denoised_image = cv2.medianBlur(binary_image, 3)
+
+    return denoised_image
+```
+
+### \#\#\# Step 3: Update Your `TextRecognitionOperator`
+
+Integrate this preprocessing pipeline into your operator class. You should also configure `pytesseract` to be more accurate.
+
+```python
+from PIL import Image # For opening the image
+import pytesseract
+
+# Assume the preprocess_for_ocr function from above is in this file
+
+class CPSAIL_Vision:
+    class TextRecognitionOperator:
+        def __init__(self):
+            # If tesseract is not in your system's PATH, you must specify it.
+            # Example for Windows:
+            # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+            pass
+
+        def execute(self, image_path: str) -> str:
+            """
+            Takes an image path, preprocesses the image, and extracts text.
+            """
+            # 1. Preprocess the image to make it clean for OCR
+            clean_image = preprocess_for_ocr(image_path)
+
+            # 2. Configure Tesseract for better accuracy
+            # --psm 6 assumes a single uniform block of text.
+            # This is one of the most common and effective settings.
+            custom_config = r'--oem 3 --psm 6'
+
+            # 3. Perform OCR on the CLEANED image
+            try:
+                extracted_text = pytesseract.image_to_string(clean_image, config=custom_config)
+                return extracted_text.strip() # Use .strip() to remove leading/trailing whitespace
+            except Exception as e:
+                print(f"An error occurred during OCR: {e}")
+                return ""
+```
+
+-----
+
+### \#\# Summary and Next Steps
+
+Your tests are failing not because your logic is wrong, but because the real world (images) is messy. By adding a robust preprocessing pipeline, you are making the data clean and predictable, which is essential for reliable testing and functionality.
+
+1.  **Integrate** the preprocessing code above.
+2.  **Ensure** you have a simple, high-contrast image for your `pytest` script. A black-and-white PNG file with large, clear text is ideal for a unit test.
+3.  **Rerun** your tests.
+
+If they still fail, please **paste your updated code and the test image you are using**, and we can refine the preprocessing steps further.

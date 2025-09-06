@@ -1,0 +1,26 @@
+{
+  "exit_code": 1,
+  "total_time_sec": 0.9768772125244141,
+  "timestamp": "2025-08-30T18:38:59Z",
+  "tests": {
+    "tests/test_solver_physics.py::test_divergence_reduced_after_multiple_steps": {
+      "outcome": "failed",
+      "duration": 0.12490719999186695,
+      "longrepr": "def test_divergence_reduced_after_multiple_steps():\n        state = allocate_state(12, 12)\n        rng = np.random.default_rng(42)\n        interior_view(state.fields['u'])[:] = rng.standard_normal((12,12))*0.05\n        interior_view(state.fields['v'])[:] = rng.standard_normal((12,12))*0.05\n        cfg = PhysConfig(nx=12, ny=12)\n        tracker = ResidualManager()\n        from pyfoamclone.numerics.fluid_ops import divergence\n        initial = np.linalg.norm(divergence(state))\n        for it in range(5):\n            step(cfg, state, tracker, it)\n        final = np.linalg.norm(divergence(state))\n>       assert final <= initial * 0.98  # at least 2% reduction overall\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       assert np.float64(0.7319786404785061) <= (np.float64(0.5643105846154775) * 0.98)\n\ntests\\test_solver_physics.py:117: AssertionError"
+    }
+  },
+  "summary": {
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "total": 1
+  },
+  "history": [
+    {
+      "timestamp": "2025-08-30T18:39:06Z",
+      "exit_code": 1,
+      "duration_sec": 2.737182378768921,
+      "raw_output_head": "...............................................F........................ [ 97%]\n..                                                                       [100%]\n================================== FAILURES ===================================\n________________ test_divergence_reduced_after_multiple_steps _________________\n\n    def test_divergence_reduced_after_multiple_steps():\n        state = allocate_state(12, 12)\n        rng = np.random.default_rng(42)\n        interior_view(state.fields['u'])[:] = rng.standard_normal((12,12))*0.05\n        interior_view(state.fields['v'])[:] = rng.standard_normal((12,12))*0.05\n        cfg = PhysConfig(nx=12, ny=12)\n        tracker = ResidualManager()\n        from pyfoamclone.numerics.fluid_ops import divergence\n        initial = np.linalg.norm(divergence(state))\n        for it in range(5):\n            step(cfg, state, tracker, it)\n        final = np.linalg.norm(divergence(state))\n>       assert final <= initial * 0.98  # at least 2% reduction overall\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       assert np.float64(0.7319786404785061) <= (np.float64(0.5643105846154775) * 0.98)\n\ntests\\test_solver_physics.py:117: AssertionError\n============================== warnings summary ===============================\ntests\\test_performance_baseline.py:7\n  c:\\Users\\Elite\\Documents\\commands\\VS Studio\\pyfoamclone\\tests\\test_performance_baseline.py:7: PytestUnknownMarkWarning: Unknown pytest.mark.perf - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html\n    @pytest.mark.perf\n\ntests/test_regression_lid_cavity_re100.py::test_regression_lid_cavity_re100\ntests/test_solver_physics.py::test_manifest_version_fields\ntests/test_state_and_residuals_extensions.py::test_run_case_manifest\n  C:\\Users\\Elite\\Documents\\commands\\VS Studio\\pyfoamclone\\pyfoamclone\\__init__.py:22: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).\n    \"timestamp_utc\": datetime.datetime.utcnow().isoformat()+\"Z\",\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ===========================\nFAILED tests/test_solver_physics.py::test_divergence_reduced_after_multiple_steps\n"
+    }
+  ]
+}

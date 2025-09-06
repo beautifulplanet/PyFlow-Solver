@@ -1,0 +1,150 @@
+{
+  "total_entries": 2214,
+  "by_ext": {
+    ".txt": 1543,
+    ".py": 296,
+    ".md": 35,
+    ".code-workspace": 2,
+    ".json": 30,
+    ".jsonl": 3,
+    ".csv": 12,
+    ".ipynb": 60,
+    "NONE": 24,
+    ".zip": 12,
+    ".png": 54,
+    ".exe": 4,
+    ".docx": 32,
+    ".pdf": 6,
+    ".toml": 3,
+    ".ini": 3,
+    ".tag": 5,
+    ".h": 7,
+    ".cpp": 17,
+    ".bat": 6,
+    ".pyd": 4,
+    ".mod": 10,
+    ".ps1": 4,
+    ".dat": 10,
+    ".f90": 32
+  },
+  "label_counts": {
+    "uncategorized": 394,
+    "legacy": 1475,
+    "failure-indicator": 1054,
+    "log": 1726,
+    "prototype": 94,
+    "success-indicator": 670
+  },
+  "size_buckets": {
+    "1-10KB": 394,
+    "<1KB": 260,
+    "10-100KB": 903,
+    "100KB-1MB": 551,
+    ">=1MB": 106
+  },
+  "avg_functions_per_code_file": 48.29,
+  "avg_classes_per_code_file": 5.26,
+  "top_external_imports": [
+    [
+      "numpy",
+      119
+    ],
+    [
+      "matplotlib",
+      47
+    ],
+    [
+      "Grid",
+      31
+    ],
+    [
+      "solve_lid_driven_cavity",
+      24
+    ],
+    [
+      "pytest",
+      21
+    ],
+    [
+      "LiveLogger",
+      16
+    ],
+    [
+      "bicgstab",
+      15
+    ],
+    [
+      "csr_matrix",
+      15
+    ],
+    [
+      "unittest",
+      15
+    ],
+    [
+      "Path",
+      14
+    ],
+    [
+      "subprocess",
+      14
+    ],
+    [
+      "time",
+      14
+    ],
+    [
+      "cg",
+      11
+    ],
+    [
+      "pandas",
+      9
+    ],
+    [
+      "spdiags",
+      8
+    ],
+    [
+      "types",
+      8
+    ],
+    [
+      "PyFOAMSolver",
+      7
+    ],
+    [
+      "scipy",
+      6
+    ],
+    [
+      "FinitudeSolver",
+      6
+    ],
+    [
+      "jit",
+      6
+    ],
+    [
+      "Extension",
+      6
+    ],
+    [
+      "pybind11",
+      6
+    ],
+    [
+      "pyflow_core_cfd",
+      6
+    ],
+    [
+      "annotations",
+      5
+    ],
+    [
+      "plot_velocity_field",
+      5
+    ]
+  ],
+  "failure_rate": 0.4761
+}

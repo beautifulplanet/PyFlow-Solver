@@ -1,0 +1,14 @@
+{
+  "grid_size": 64,
+  "domain_length": 1.0,
+  "reynolds_number": 100.0,
+  "time_step": 0.001,
+  "total_time": 1.0,
+  "relaxation_factor_u": 0.7,
+  "relaxation_factor_v": 0.7,
+  "relaxation_factor_p": 0.3,
+  "max_cfl": 0.8,
+  "output_interval": 100,
+  "save_path": "results/",
+  "log_residuals": true
+}

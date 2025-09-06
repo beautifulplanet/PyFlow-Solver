@@ -1,0 +1,91 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Full Workspace Postmortem",
+			"type": "shell",
+			"command": "python postmortem_workspace.py",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Full Workspace Postmortem",
+			"type": "shell",
+			"command": "python postmortem_workspace.py",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Workspace Full Scan",
+			"type": "shell",
+			"command": "python workspace_full_scan.py",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Generate Learning Dataset",
+			"type": "shell",
+			"command": "python generate_learning_dataset.py",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		}
+		,
+		{
+			"label": "Generate Extended Learning Dataset",
+			"type": "shell",
+			"command": "python generate_learning_dataset_extended.py",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		}
+		,
+		{
+			"label": "Salvage & Guardrails",
+			"type": "shell",
+			"command": "python salvage_and_guardrails.py",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		}
+		,
+		{
+			"label": "Build CFD Knowledge DB",
+			"type": "shell",
+			"command": "python build_cfd_knowledge_db.py",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		}
+		,
+		{
+			"label": "Build Semantic Index",
+			"type": "shell",
+			"command": "python build_semantic_index.py",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		}
+		,
+		{
+			"label": "Export SQLite Knowledge DB",
+			"type": "shell",
+			"command": "python export_sqlite_db.py",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

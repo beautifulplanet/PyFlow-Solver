@@ -1,0 +1,22 @@
+{
+  "project_name": "cfdmini",
+  "run_id": "c8d4cc46",
+  "timestamp_utc": "2025-09-02T19:16:21Z",
+  "cwd": "C:\\Users\\Elite\\Documents\\commands",
+  "python_version": "3.13.7",
+  "platform": "Windows-11-10.0.26100-SP0",
+  "git_sha": null,
+  "env_project_name": null,
+  "argv": [
+    "poisson_manufactured_test.py",
+    "--grids",
+    "17",
+    "33",
+    "65",
+    "--tol",
+    "1e-6",
+    "--metrics-out",
+    "C:\\Users\\Elite\\AppData\\Local\\Temp\\pytest-of-Elite\\pytest-314\\test_poisson_metrics_written0\\metrics.json"
+  ],
+  "config_hash": null
+}

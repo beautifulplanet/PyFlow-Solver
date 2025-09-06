@@ -1,0 +1,111 @@
+Yes, let's re-examine the boundary condition logic in `pyflow/solver.py`. Given that simpler fixes haven't worked, a detailed review of how the solver handles the boundaries for the straight channel case is the most logical next step.
+
+Here are the relevant code sections from `pyflow/solver.py`, focusing on how the boundary conditions are implemented.
+
+### **Boundary Condition Logic in `pyflow/solver.py`**
+
+**`assemble_momentum_matrix_actual_with_diag_vectorized` function:**
+
+```python
+    # Inlet Boundary (West Face) - for i = 0 fluid cells
+    i_inlet_cells = 0
+    inlet_fluid_indices_y = np.where(is_fluid_cell[:, i_inlet_cells])[0]
+    if inlet_fluid_indices_y.size > 0:
+        # Pressure correction at the inlet boundary face is often set to 0
+        # (consistent with fixed inlet velocity). This modifies the coefficient
+        # for the West face contribution to Ap[cell_index, cell_index].
+        # The coefficient for the face becomes related to (rho * Area_ew^2 / Au_P_cell) / dx
+        # Corrected indexing for Au_diag
+        inlet_cell_indices = cell_indices[inlet_fluid_indices_y, i_inlet_cells].flatten()
+        Ap_nb_w_boundary = rho * grid.Area_ew * grid.Area_ew * (1.0 / Au_diag.reshape(n_cells_y, n_cells_x)[inlet_fluid_indices_y, i_inlet_cells]) / grid.dx
+        Ap_diag_field[inlet_fluid_indices_y, i_inlet_cells] += Ap_nb_w_boundary
+
+
+    # Outlet Boundary (East Face) - for i = n_cells_x - 1 fluid cells
+    i_outlet_cells = n_cells_x - 1
+    outlet_fluid_indices_y = np.where(is_fluid_cell[:, i_outlet_cells])[0]
+    if outlet_fluid_indices_y.size > 0:
+        # Pressure correction at the outlet boundary face is usually fixed to 0
+        # (consistent with p=0 gauge BC). This modifies the diagonal coefficient.
+        # Corrected indexing for Au_diag
+        outlet_cell_indices = cell_indices[outlet_fluid_indices_y, i_outlet_cells].flatten()
+        Ap_nb_e_boundary = rho * grid.Area_ew * grid.Area_ew * (1.0 / Au_diag.reshape(n_cells_y, n_cells_x)[outlet_fluid_indices_y, i_outlet_cells]) / grid.dx
+        Ap_diag_field[outlet_fluid_indices_y, i_outlet_cells] += Ap_nb_e_boundary
+
+
+    # Bottom Wall Boundary (South Face) - for j = 0 fluid cells
+    j_bottom_wall_cells = 0
+    bottom_wall_fluid_indices_x = np.where(is_fluid_cell[j_bottom_wall_cells, :])[0]
+    if bottom_wall_fluid_indices_x.size > 0:
+        # No mass flux through wall -> v'=0 at wall. Similar effect on diagonal as p'=0.
+        # Coefficient related to (rho * Area_ns^2 / Av_P_cell) / dy
+        # Corrected indexing for Av_diag
+        bottom_wall_cell_indices = cell_indices[j_bottom_wall_cells, bottom_wall_fluid_indices_x].flatten()
+        Ap_nb_s_boundary = rho * grid.Area_ns * grid.Area_ns * (1.0 / Av_diag.reshape(n_cells_y, n_cells_x)[j_bottom_wall_cells, bottom_wall_fluid_indices_x]) / grid.dy
+        Ap_diag_field[j_bottom_wall_cells, bottom_wall_fluid_indices_x] += Ap_nb_s_boundary
+
+
+    # Top Wall Boundary (North Face) - for j = n_cells_y - 1 fluid cells
+    j_top_wall_cells = n_cells_y - 1
+    top_wall_fluid_indices_x = np.where(is_fluid_cell[j_top_wall_cells, :])[0]
+    if top_wall_fluid_indices_x.size > 0:
+        # No mass flux through wall -> v'=0 at wall.
+        # Corrected indexing for Av_diag
+        top_wall_cell_indices = cell_indices[j_top_wall_cells, top_wall_fluid_indices_x].flatten()
+        Ap_nb_n_boundary = rho * grid.Area_ns * grid.Area_ns * (1.0 / Av_diag.reshape(n_cells_y, n_cells_x)[j_top_wall_cells, top_wall_fluid_indices_x]) / grid.dy
+        Ap_diag_field[j_top_wall_cells, top_wall_fluid_indices_x] += Ap_nb_n_boundary
+```
+
+**`calculate_continuity_residual_actual_vectorized` function:**
+
+```python
+    # Inlet Boundary (i = 0 cells): Use specified inlet velocity
+    inlet_y_indices = np.where(grid.y_cc[:, 0] <= grid.Ly_in + 1e-9)[0]
+    u_face_w_star[inlet_y_indices, 0] = U_in # For cells within inlet height
+    u_face_w_star[np.where(grid.y_cc[:, 0] > grid.Ly_in + 1e-9)[0], 0] = 0.0 # Wall above inlet
+
+    Mass_w = rho * u_face_w_star * Area_ew
+
+
+    # Outlet Boundary (i = n_cells_x - 1 cells): Assume zero gradient for velocity
+    u_face_e_star[:, -1] = u_star_field[:, -1] # Simple extrapolation
+
+    Mass_e = rho * u_face_e_star * Area_ew
+
+
+    # Bottom Wall Boundary (j = 0 cells): No flow through wall (v=0)
+    v_face_s_star[0, :] = 0.0
+
+    Mass_s = rho * v_face_s_star * Area_ns
+
+
+    # Top Wall Boundary (j = n_cells_y - 1 cells): No flow through wall (v=0)
+    # Corrected logic: The top boundary is at j = n_cells_y - 1.
+    # For cells at this top boundary row, the north face velocity is 0.
+    v_face_n_star[-1, :] = 0.0
+```
+
+**`update_velocity_from_pressure_correction_vectorized` function:**
+
+```python
+    # Apply explicit boundary conditions after the general update (Vectorized)
+    # Inlet BC: u = U_in (for applicable cells), v = 0
+    inlet_y_indices = np.where(grid.y_cc[:, 0] <= grid.Ly_in + 1e-9)[0]
+    u_corrected[inlet_y_indices, 0] = U_in
+    v_corrected[inlet_y_indices, 0] = 0.0
+    # Wall BCs: u=0, v=0
+    u_corrected[0, :] = 0.0 # Bottom wall
+    v_corrected[0, :] = 0.0
+    u_corrected[grid.Ny_out - 1, :] = 0.0 # Top wall (full length) - Corrected index
+    v_corrected[grid.Ny_out - 1, :] = 0.0 # Corrected index
+```
+
+### **Analysis and Next Steps**
+
+Based on a detailed review of this logic, especially in the context of the simple straight channel benchmark where `Ly_in == Ly_out`:
+
+1.  **Outlet Condition**: The simple velocity extrapolation `u_face_e_star[:, -1] = u_star_field[:, -1]` is a known source of instability and can prevent residuals from decreasing. A more robust outlet condition is needed.
+2.  **Pressure Reference**: The pressure reference is hard-coded to the cell at index `[0,0]` (`Ap[0, 0] = 1.0`). While necessary, this can sometimes conflict with the physics if that cell experiences complex pressure changes.
+3.  **Explicit vs. Implicit BCs**: The boundary conditions are applied both implicitly during matrix assembly (by modifying coefficients) and explicitly after the velocity update. This can sometimes lead to inconsistencies.
+
+The most likely culprit preventing convergence to a tight tolerance is the **outlet boundary condition**. Let's try implementing a more physically sound outlet condition that enforces global mass conservation and see if it resolves the plateauing residuals in our benchmark test.

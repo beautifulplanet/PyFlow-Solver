@@ -1,0 +1,38 @@
+Based on your request, I will provide the specific details for implementing the pressure-Poisson linear system setup and solver, drawing from the Dosidon framework.
+
+### **1. Discretized Pressure-Poisson Equation**
+
+The solver's goal is to solve the following linear system for the pressure field, $p$:
+
+$$A \cdot p = rhs_{pressure\_poisson}$$
+
+Here's the breakdown of the components:
+
+* $A$: This is the discretized **Laplacian operator** ($\nabla^2$).
+* $p$: This is the pressure field at the next time step, which the solver must find.
+* $rhs_{pressure\_poisson}$: This is the right-hand side of the pressure-Poisson equation, which you have already implemented conceptually.
+
+### **2. Setup of the Matrix `A` (The Discretized Laplacian)**
+
+The matrix $A$ represents the discretized Laplacian operator using the **Spectral Element Method (SEM)**.
+
+* **Logic**: The matrix $A$ is assembled from smaller elemental matrices that represent the Laplacian operator within each individual SEM element.
+* **Derivation**: The elemental matrices are constructed from the differentiation matrices ($\mathbf{D}$) for each spatial direction. For example, a 1D elemental Laplacian matrix is $\mathbf{D}^T \mathbf{M} \mathbf{D}$, where $\mathbf{M}$ is the mass matrix (representing the integral of basis functions) and $\mathbf{D}$ is the differentiation matrix. This construction ensures that the resulting matrix is symmetric and positive definite, which is ideal for the chosen solver method.
+* **Assembly**: The final global matrix $A$ is assembled by summing the elemental matrices, taking care to handle the contributions from shared nodes at the element boundaries.
+
+### **3. Solving the Linear System**
+
+The files confirm that the resulting linear system can be solved using efficient **iterative methods**.
+
+* **Method**: The **Conjugate Gradient (CG) method** is the recommended iterative solver. CG is well-suited for solving linear systems where the matrix $A$ is symmetric and positive definite, which is the case for the discretized Laplacian.
+* **Preconditioning**: To accelerate the convergence of the CG method, a preconditioning step is typically used. This involves transforming the linear system into a new one that is easier to solve, often by using an approximate inverse of the matrix $A$.
+* **The Solver Call**: Your code will call a function that implements the CG method, passing it the discretized matrix $A$ and the calculated right-hand side vector.
+
+### **4. Placeholder Refinement**
+
+You should refine the placeholder code (cell `880d7097`) to reflect these steps. The code should:
+1.  **Construct the Matrix `A`**: Use functions that build the elemental matrices and assemble them into the global matrix $A$.
+2.  **Define the Right-Hand Side**: Use the `final_rhs` vector calculated in the previous steps.
+3.  **Call the Solver**: Use a library function (e.g., `scipy.sparse.linalg.cg` or a custom implementation) to solve the linear system for the pressure field $p$.
+
+This approach correctly translates the high-level description of the pressure-Poisson solver from the Dosidon documents into an actionable, code-level strategy.

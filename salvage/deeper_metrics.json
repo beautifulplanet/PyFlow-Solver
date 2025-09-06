@@ -1,0 +1,123 @@
+{
+  "generated": "2025-08-29T19:55:59.264834+00:00",
+  "timeline_buckets": 5,
+  "median_quality": 96,
+  "top_quality_examples": [
+    "49776437b0197373",
+    "8b7248b65167e8ae",
+    "f83e872e6adf742d",
+    "348a8ca302254cd1",
+    "26aa71717faeff6d",
+    "ddae493c0fb7c036",
+    "68561ec4149aeddf",
+    "860e656f7ce7b5de",
+    "dae36648c22a60b3",
+    "1d98154d4478e171",
+    "81ff8fd1b94c9649",
+    "8043eb016cdea9cf",
+    "9aca0fde8bb0d682",
+    "27d55dae8b123dd1",
+    "54fe1ae2da6db068",
+    "3bc91a8716cc0d60",
+    "9a16495da35ec1c3",
+    "10d5171f645dc797",
+    "b521d081ddd8f6df",
+    "1009eda7fa9991fa"
+  ],
+  "orphan_salvage_count": 5440,
+  "refactor_candidate_count": 100,
+  "top_modules_by_coupling": [
+    {
+      "module": "numpy",
+      "in_degree": 1102,
+      "out_degree": 0,
+      "coupling": 1102
+    },
+    {
+      "module": "scipy",
+      "in_degree": 741,
+      "out_degree": 0,
+      "coupling": 741
+    },
+    {
+      "module": "pytest",
+      "in_degree": 455,
+      "out_degree": 0,
+      "coupling": 455
+    },
+    {
+      "module": "sys",
+      "in_degree": 312,
+      "out_degree": 0,
+      "coupling": 312
+    },
+    {
+      "module": "typing",
+      "in_degree": 290,
+      "out_degree": 0,
+      "coupling": 290
+    },
+    {
+      "module": "os",
+      "in_degree": 287,
+      "out_degree": 0,
+      "coupling": 287
+    },
+    {
+      "module": "warnings",
+      "in_degree": 227,
+      "out_degree": 0,
+      "coupling": 227
+    },
+    {
+      "module": "__future__",
+      "in_degree": 223,
+      "out_degree": 0,
+      "coupling": 223
+    },
+    {
+      "module": "pip",
+      "in_degree": 204,
+      "out_degree": 0,
+      "coupling": 204
+    },
+    {
+      "module": "collections",
+      "in_degree": 171,
+      "out_degree": 0,
+      "coupling": 171
+    },
+    {
+      "module": "functools",
+      "in_degree": 152,
+      "out_degree": 0,
+      "coupling": 152
+    },
+    {
+      "module": "re",
+      "in_degree": 145,
+      "out_degree": 0,
+      "coupling": 145
+    },
+    {
+      "module": "itertools",
+      "in_degree": 136,
+      "out_degree": 0,
+      "coupling": 136
+    },
+    {
+      "module": "math",
+      "in_degree": 115,
+      "out_degree": 0,
+      "coupling": 115
+    },
+    {
+      "module": "logging",
+      "in_degree": 103,
+      "out_degree": 0,
+      "coupling": 103
+    }
+  ],
+  "evolution_chain_count": 226,
+  "longest_chain": "__init__"
+}

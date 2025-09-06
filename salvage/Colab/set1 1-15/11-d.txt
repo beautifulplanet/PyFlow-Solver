@@ -1,0 +1,24 @@
+Based on your request, I will now provide a conceptual overview of how to integrate the pressure-Poisson solve and velocity projection steps into the Dosidon simulation loop. This information directly translates the theoretical descriptions from the project files into a clear, procedural guide for your solver.
+
+Conceptual Integration of the Pressure-Poisson Solve
+The objective of the pressure-Poisson solve and velocity projection is to ensure the velocity field remains divergence-free (∇⋅u=0) at every time step, which is an axiomatic requirement of the Dosidon framework for incompressible fluids. This is achieved by using the pressure field as a mathematical tool to "project" the velocity field onto a divergence-free space.
+
+Here is the conceptual workflow for integrating these steps into the solver's time loop:
+
+Advance Fields to an Intermediate State: The simulation starts by advancing the velocity field from the current time step (t 
+n
+ ) to a new, intermediate velocity field (u 
+∗
+ ). This is done by applying all the terms in the momentum equation except for the pressure gradient term. This includes the non-linear convective term (explicitly) and the viscous and hyper-viscosity terms (implicitly). At this point, the intermediate velocity field u 
+∗
+  will likely not be divergence-free.
+
+Formulate and Solve the Pressure-Poisson Equation: To make the velocity field divergence-free, you need to find a pressure field that, when its gradient is applied to the intermediate velocity, corrects it. This is mathematically expressed by the pressure-Poisson equation, which relates the divergence of the intermediate velocity field to the Laplacian of the pressure field. The right-hand side of this equation is formed from the divergence of the intermediate velocity. The solver then solves this discretized linear system for the pressure field (p 
+n+1
+ ) at the new time step.
+
+Project the Velocity Field: The final step is to use the pressure field solved in the previous step to project the intermediate velocity field onto a divergence-free space. This is done by subtracting the gradient of the newly calculated pressure field from the intermediate velocity field to get the final velocity field for the new time step (t 
+n+1
+ ).
+
+This three-step process ensures that the incompressibility constraint is met at every time step of the simulation, maintaining the axiomatic integrity of the Dosidon framework and preventing numerical instabilities associated with non-divergence-free velocity fields.

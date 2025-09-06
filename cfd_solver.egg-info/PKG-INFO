@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: cfd-solver
+Version: 0.0.2
+Summary: Lightweight CFD projection solver test harness
+Author: Your Name
+Project-URL: Homepage, https://example.com/cfd-solver
+Project-URL: Repository, https://example.com/cfd-solver/repo
+Project-URL: Issues, https://example.com/cfd-solver/issues
+Requires-Python: >=3.11
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: scipy
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Dynamic: license-file

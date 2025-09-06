@@ -1,0 +1,61 @@
+ou've correctly identified that we're stuck in a debugging loop. Tweaking relaxation factors is a minor adjustment when the evidence—residuals plateauing far above the tolerance—points to a more fundamental issue with the solver's core logic.
+
+Based on my analysis of the provided code and the persistent AssertionError in your benchmark test, the most promising direction is to re-examine the implementation of the boundary conditions and the pressure correction step. The fact that a simple, analytically solvable problem like channel flow is not converging correctly is a major red flag.
+
+Here's a breakdown of the likely issues and the next steps:
+
+Core Problems Identified
+Pressure Reference Handling: In the assemble_pressure_correction_matrix, the pressure is fixed at a single point Ap[0, 0] = 1.0 and the corresponding source term is also zeroed out. While this makes the matrix solvable, it's a "hard" constraint that can sometimes conflict with the physics, especially if that point is not naturally at a known pressure. A more robust method is needed.
+
+Outlet Boundary Condition: The current implementation for the outlet is a simple extrapolation (u_face_e_star = u_star_field[:, i]). This is a weak boundary condition that can cause reflections and stability issues, preventing residuals from dropping to very low levels.
+
+Velocity Update: The velocity update step in update_velocity_from_pressure_correction is where the pressure correction gradient is used to enforce continuity. Errors in how this gradient is calculated at the boundaries or how it's applied can prevent the solver from eliminating the continuity error.
+
+Recommended Next Steps
+Let's focus on making the benchmark test pass by improving the robustness of the implementation.
+
+Step 1: Improve the Outlet Boundary Condition
+In the calculate_continuity_residual_actual_vectorized function, we'll implement a more stable outlet condition. Instead of simple extrapolation, we'll enforce that the total mass flow out of the domain equals the total mass flow in.
+
+In pyflow/solver.py, find the calculate_continuity_residual_actual_vectorized function and modify the "East Face" (outlet) calculation.
+
+Current code:
+
+Python
+
+# Outlet Boundary (i = n_cells_x - 1 cells): Assume zero gradient for velocity
+u_face_e_star[:, -1] = u_star_field[:, -1] # Simple extrapolation
+Mass_e = rho * u_face_e_star * Area_ew
+Replace with this improved logic:
+
+Python
+
+# Outlet Boundary (i = n_cells_x - 1 cells): Adjust outlet flux to enforce global mass conservation
+total_inlet_mass_flow = np.sum(Mass_w[:, 0]) # Mass flow at the inlet
+# Calculate total mass flow through all other faces
+mass_flow_other_faces = np.sum(Mass_w[:, 1:]) - np.sum(Mass_e[:, :-1]) + np.sum(Mass_s) - np.sum(Mass_n)
+# Required outlet flux to balance the total
+required_outlet_mass_flow = total_inlet_mass_flow + mass_flow_other_faces
+# Distribute this required flux proportionally to the velocity profile at the outlet
+outlet_velocity_profile = u_star_field[:, -1]
+outlet_mass_flux_profile = required_outlet_mass_flow * (outlet_velocity_profile / np.sum(outlet_velocity_profile))
+# Update the East face mass flux for the last column of cells
+Mass_e[:, -1] = outlet_mass_flux_profile
+Step 2: Re-run the Benchmark Test
+After making this change, let's execute the test_fully_developed_channel_flow function again to see if this more physically consistent outlet condition improves convergence.
+
+Python
+
+import sys
+import os
+
+# Add the project directory to the system path
+project_dir = 'pyflow_solver'
+sys.path.insert(0, os.path.abspath(project_dir))
+
+# Import and run the test
+from tests.test_solver import test_fully_developed_channel_flow
+
+print("Running the benchmark test with improved outlet boundary condition...")
+test_fully_developed_channel_flow()
+This change directly addresses a common source of residual plateauing. Let's see how the solver behaves with this correction.

@@ -1,0 +1,24 @@
+[project]
+name = "pyflow_solver"
+version = "0.1.0"
+description = "A 2D CFD solver for the lid-driven cavity problem."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Your Name", email = "you@example.com" }
+]
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "pytest"
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+# This tells setuptools to find all packages in the current directory
+# and include your pyflow_solver package.
+where = ["."]
+include = ["pyflow_solver*"]

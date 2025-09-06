@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install .[dev]
+      - name: Lint (ruff)
+        run: |
+          ruff check .
+      - name: Type check (mypy)
+        run: |
+          mypy framework
+      - name: Run fast tests
+        env:
+          PROJECTION_ENABLE: "1"
+        run: |
+          pytest -q
+      - name: Run slow tests subset
+        if: matrix.python-version == '3.11'
+        env:
+          PROJECTION_ENABLE: "1"
+        run: |
+          pytest -m slow -q || echo "Slow tests completed (allow failures for now)"

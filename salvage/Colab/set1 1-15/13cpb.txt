@@ -1,0 +1,23 @@
+Based on your request, I will provide the specific details from the Dosidon framework to help you refine the implementation of the pressure-Poisson equation's right-hand side (RHS). This information directly translates the mathematical formulation into a logical sequence of code operations for your solver.
+
+### **Implementation Details for the Pressure-Poisson RHS**
+
+The objective is to implement the following formula for the pressure-Poisson equation:
+$$\nabla^2 p = \nabla \cdot \left[ \rho \left( \mu_{\text{fluid}} \nabla^2 \mathbf{u} + \nu_2 \rho \nabla^4 \mathbf{u} - \left( \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} \right) \right) \right]$$
+
+To implement this, your solver must perform the calculations inside the divergence, which involves applying the appropriate spatial derivatives using the **Spectral Element Method (SEM)** and incorporating the terms from your IMEX time integration scheme.
+
+1.  **Calculate Spatial Derivative Terms**:
+    * **Classical Viscous Term**: Compute the Laplacian of the intermediate velocity field, $\nabla^2 \mathbf{u}$. This term represents the classical fluid viscosity.
+    * **ΨΦ Hyper-Viscosity Term**: Compute the bi-Laplacian of the intermediate velocity field, $\nabla^4 \mathbf{u}$. This is the ΨΦ-derived intrinsic regularization term that prevents singularities.
+    * **Convective Term**: Compute the non-linear convective term, $(\mathbf{u} \cdot \nabla) \mathbf{u}$, using the velocity field from the previous time step ($t^n$).
+    * **Time Derivative Term**: This term, $\frac{\partial \mathbf{u}}{\partial t}$, will be handled by the IMEX scheme's time advancement logic. It's implicitly solved for, so you won't need to explicitly compute it on the RHS in this step.
+
+2.  **Formulate the RHS Vector**:
+    * Combine the calculated terms into a single vector. This involves adding the spatial derivative terms and subtracting the convective term, then multiplying by the constant density $\rho$.
+    * The resulting vector represents the divergence of the terms that are not explicitly handled by the pressure gradient.
+
+3.  **Compute the Final RHS (Divergence)**:
+    * Apply the divergence operator ($\nabla \cdot$) to the vector you formulated in the previous step. The result is a scalar field that forms the final right-hand side of the pressure-Poisson equation.
+
+Your code should be structured to perform these steps sequentially, using functions for each mathematical operation (e.g., `calculate_laplacian_sem`, `calculate_bi_laplacian_sem`, `calculate_convective_term_sem`, `calculate_divergence_sem`) that are implemented according to the **Spectral Element Method**.

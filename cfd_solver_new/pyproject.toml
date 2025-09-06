@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyflow-cfd"
+version = "0.1.0"
+description = "Educational CFD projection solver with CLI, dashboard, AI control, and robustness roadmap"
+readme = "README.md"
+authors = [{ name = "PyFlow Team" }]
+license = { text = "MIT" }
+requires-python = ">=3.10"
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"Topic :: Scientific/Engineering :: Physics",
+	"Intended Audience :: Science/Research"
+]
+dependencies = [
+	"numpy==1.26.4",
+	"scipy==1.13.1"
+]
+
+[project.optional-dependencies]
+dash = ["dash==2.17.1", "plotly==5.23.0"]
+dev = ["pytest>=7.4", "flake8>=6.1", "autopep8>=2.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pyflow]
+# Future: generalized mesh toggle, checkpoint frequency defaults, logging config
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203"]
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"

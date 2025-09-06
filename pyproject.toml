@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cfd-solver"
+version = "0.0.2"
+description = "Lightweight CFD projection solver test harness"
+authors = [{ name="Your Name" }]
+requires-python = ">=3.11"
+dependencies = [
+	"numpy",
+	"scipy",
+]
+
+[project.optional-dependencies]
+dev = [
+	"pytest",
+	"mypy",
+	"ruff",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [
+	"salvage",
+	"**/legacy",
+]
+
+[tool.ruff.lint]
+select = [
+	"E",  # pycodestyle errors
+	"F",  # pyflakes
+	"I",  # import sorting
+	"B",  # bugbear
+	"UP", # pyupgrade
+]
+ignore = [
+	"E203",  # whitespace before ':' (conflicts with black style if adopted later)
+]
+
+[tool.mypy]
+python_version = "3.11"
+packages = ["cfd_solver", "framework", "pyflow"]
+exclude = ["salvage", "tests", "pyfoamclone"]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = ["scipy.*", "numpy.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "-q"
+markers = [
+	"slow: marks tests as slow (use -m slow to select)",
+]
+
+[tool.setuptools]
+package-dir = {"pyflow" = "cfd_solver_new/src/pyflow"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["salvage*", "pyfoamclone*", "**/legacy*", "**/build*"]
+
+[project.urls]
+Homepage = "https://example.com/cfd-solver"
+Repository = "https://example.com/cfd-solver/repo"
+Issues = "https://example.com/cfd-solver/issues"
+
+[project.scripts]
+pyflow = "pyflow.cli:main"
+
+
+# Provide a lightweight alias so editors that still look for mypy.ini resolve settings.

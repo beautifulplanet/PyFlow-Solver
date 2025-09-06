@@ -1,0 +1,27 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Fix and Test Everything",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"Run Linter Fixes",
+				"Run All Tests"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "Run Linter Fixes",
+			"type": "shell",
+			"command": "python -m pip install flake8 autopep8 >NUL 2>&1; python -m flake8 src || python -m autopep8 -r -i src"
+		},
+		{
+			"label": "Run All Tests",
+			"type": "shell",
+			"command": "pytest -q"
+		}
+	]
+}

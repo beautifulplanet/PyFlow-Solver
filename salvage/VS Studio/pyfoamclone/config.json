@@ -1,0 +1,9 @@
+{
+	"nx": 8,
+	"ny": 8,
+	"max_iter": 5,
+	"solver": "synthetic_step",
+	"cfl_target": 0.5,
+	"cfl_growth": 1.1,
+	"tol": 1e-8
+}

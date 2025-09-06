@@ -1,0 +1,149 @@
+Excellent. Path A it is. We will now build the "assembly line" for the Finitude language, and we will do it with the rigor of a masterclass effort.
+
+Let's begin the implementation of the conditional `if` statement. We will follow the Test-Driven Development (TDD) protocol: write the tests first, watch them fail, and then write the interpreter code to make them pass.
+
+-----
+
+### \#\# Group Chat: Project Sentinel - `if` Statement Implementation
+
+**Gemini:** Decision confirmed. We are proceeding with the development of the Finity language core. The first task is to implement the `?` (`if`) statement. Here is the action plan.
+
+-----
+
+### \#\#\# Step 1: Update Tokenizer
+
+**Claude:** The first mechanical step is to ensure the tokenizer recognizes all the necessary symbols for our new syntax. I've updated the `token_specification` list to include the mandatory parentheses and the curly braces for code blocks.
+
+Update your `tokenize` function in `finity_core.py` with these definitions:
+
+```python
+def tokenize(code):
+    token_specification = [
+        ('SKIP',       r'[ \t\n]+'),
+        ('COMMENT',    r'#.*'),
+        ('SEMICOLON',  r';'),
+        ('ARROW',      r'=>'),
+        ('DECLARE',    r'~@'),
+        ('PLUS',       r'\+\|>'),
+        ('MULTIPLY',   r'\*><'),
+        # ... all other operators (MINUS, DIVIDE, comparisons)
+        ('EQ',         r'==\|'),
+        ('NE',         r'!=|'),
+        ('GT',         r'>\|\|'),
+        ('LT',         r'<\|\|'),
+        ('GE',         r'>=\|\|'),
+        ('LE',         r'<=\|\|'),
+
+        # New Tokens for Control Flow
+        ('IF',         r'\?'),
+        ('LPAREN',     r'\('),  # Mandatory Parenthesis Start
+        ('RPAREN',     r'\)'),  # Mandatory Parenthesis End
+        ('LBRACE',     r'\{'),  # Block Start
+        ('RBRACE',     r'\}'),  # Block End
+
+        ('IDENTIFIER', r'[a-zA-Z_][a-zA-Z0-9_]*'),
+        ('NUMBER',     r'\d+(\.\d*)?([eE][-+]?\d+)?'),
+    ]
+    # ... rest of the tokenizer function
+```
+
+-----
+
+### \#\#\# Step 2: Create the Failing Test Suite
+
+**Janus:** Now, we write the tests. According to TDD, these tests **must fail** when you first run them. Create a new file, `test_suites/test_conditionals.py`. It will contain all the test cases we discussed, designed to validate every aspect of the `if` statement's logic and our strict "truthiness" rule.
+
+**`test_suites/test_conditionals.py`:**
+
+```python
+# Import the (not yet updated) interpreter components
+from finity_core import FinityNumber, tokenize, CorrectedParser, CorrectedInterpreter
+
+# Janus's Mandated Test Suite for Conditional Logic
+code_conditional_tests = """
+    # Test 5.1: "True" path execution
+    ~@ var_true => 0;
+    ? (==| 1 1) {
+      var_true => 100;
+    };
+
+    # Test 5.2: "False" path non-execution
+    ~@ var_false => 0;
+    ? (==| 1 0) {
+      var_false => 100;
+    };
+
+    # Test 5.3: Using a variable as a condition
+    ~@ condition_var => >|| 20 5; # Becomes 1.0
+    ~@ result_var => 50;
+    ? (condition_var) {
+      result_var => *>< result_var 2;
+    };
+
+    # Test 5.4: Nested conditionals
+    ~@ outer_var => 0;
+    ~@ inner_var => 0;
+    ? ( >|| 10 5 ) {
+      outer_var => 1;
+      ? ( <|| 10 5 ) {
+        inner_var => 1; # This should not execute
+      };
+    };
+
+    # Test 5.5: Strict Truthiness (non-1.0 is false)
+    ~@ truthy_var => 0;
+    ? (50) {
+      truthy_var => 1;
+    };
+
+    # Test 5.6: Strict Truthiness (1.0 is true)
+    ~@ truthy_var_two => 0;
+    ? (1) {
+      truthy_var_two => 1;
+    };
+"""
+
+def run_tests():
+    print("--- Running Conditional Logic Test Suite ---")
+    try:
+        tokens = tokenize(code_conditional_tests)
+        parser = CorrectedParser(tokens)
+        ast = parser.parse()
+        interpreter = CorrectedInterpreter()
+        interpreter.interpret(ast)
+
+        # Analysis
+        expected = {
+            "var_true": 100.0, "var_false": 0.0,
+            "condition_var": 1.0, "result_var": 100.0,
+            "outer_var": 1.0, "inner_var": 0.0,
+            "truthy_var": 0.0, "truthy_var_two": 1.0,
+        }
+        
+        # ... (Add the analysis/discrepancy check logic here) ...
+
+        print("Conditional Logic tests PASSED.")
+    except Exception as e:
+        print(f"Conditional Logic tests FAILED: {e}")
+
+# This allows running the test directly
+if __name__ == "__main__":
+    run_tests()
+```
+
+-----
+
+### \#\#\# Steps 3 & 4: Update Parser and Interpreter
+
+**Gemini:** With the tokenizer updated and the failing test in place, you can now proceed with the core implementation in `finity_core.py`.
+
+  * **Update the Parser:** Modify the `parse_statement` method to recognize the `IF` token. It must enforce the `? (...) {...};` structure and build an `IF_STATEMENT` AST node. Remember to implement the enhanced error reporting Claude mentioned.
+  * **Update the Interpreter:** Modify the `execute` method to handle the `IF_STATEMENT` node. It should evaluate the condition and, if and only if the result is `FinityNumber(1.0)`, execute the statements in the body.
+
+-----
+
+### \#\#\# Step 5: Final Validation
+
+Once you've updated the parser and interpreter, run `python test_suites/test_conditionals.py`. Your goal is to see it print "Conditional Logic tests PASSED."
+
+This TDD workflow ensures your implementation is precise, robust, and directly validated against a comprehensive set of requirements. Let us know when the tests are green.

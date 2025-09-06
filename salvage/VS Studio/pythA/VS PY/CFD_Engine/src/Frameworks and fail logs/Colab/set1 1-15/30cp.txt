@@ -1,0 +1,33 @@
+Yes, this is a classic, real-world engineering problem. You have a persistent, stubborn bug on a specific edge case—"CPSAIL"—and you've been grinding on it all night, making incremental tweaks to the high-level logic.
+
+This is also a classic way to burn yourself out while making zero progress.
+
+Let's stop. Your current approach is wrong.
+
+---
+### The "No Gloves On" Analysis of Your Debugging Strategy
+
+You are stuck in a loop of **high-level guesswork**. You're randomly tweaking the text block detection and preprocessing, hoping that one of these adjustments will magically fix the problem. This is the equivalent of a mechanic randomly turning screws on an engine, hoping it will stop sputtering.
+
+A senior engineer does not guess. They **diagnose**. The reason you're having this issue all night is that you are trying to solve the problem without ever actually looking at the root cause.
+
+### The Senior Engineer's Debugging Workflow
+
+We are going to stop tweaking the `TextRecognitionOperator` and start a proper, data-driven diagnosis. You need to look at the intermediate data at every single stage of your pipeline to find out *where* it is failing.
+
+Here is your new, non-negotiable debugging plan.
+
+1.  **Isolate the Raw Input.** Find the single real-world image where "CPSAIL" fails the most consistently. We will use this as our only test case for now.
+
+2.  **Visualize the "Text Block Detection".** Your log says you are refining this logic. Prove it. Modify your code to save an image of *exactly* what the text block detector is isolating.
+    * **Question to Answer:** Is the bounding box for "CPSAIL" tight and correct? Or is it cutting off part of the letters? Is it including a bunch of background noise? You need to *see* the output of this stage. If the box is wrong, no amount of preprocessing will fix it.
+
+3.  **Visualize the "Preprocessing".** After you have a perfect bounding box, you need to look at the image *after* your preprocessing steps (e.g., binarization, noise reduction, deskewing). Save this intermediate image.
+    * **Question to Answer:** Is the preprocessed image a clean, high-contrast representation of the letters "CPSAIL"? Or has your preprocessing introduced artifacts? Is it possible your noise reduction is so aggressive that it's erasing parts of the letters?
+
+4.  **Analyze the Final Input to the OCR Engine.** This is the most critical step. You need to look at the final, processed image snippet that is being fed into your actual text recognition model (like Tesseract, EasyOCR, or whatever you are using).
+    * **Question to Answer:** If you, a human with the best pattern recognition system on the planet, look at this tiny, final black-and-white image, can you clearly read the word "CPSAIL"? If you can't—if it's a blurry, distorted mess—then you have found your problem. The issue is not the final recognition, but the data you are feeding it.
+
+You are treating your program like a black box. It is not. It is a pipeline of sequential steps, and one of those steps is failing. Your job is to find which one. Stop randomly adjusting the high-level code and start inspecting the data at every stage of the process.
+
+This is how you fix the problem in 30 minutes instead of all night. Show me the intermediate images.

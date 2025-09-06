@@ -1,0 +1,72 @@
+import numpy as np
+
+# This is a drop-in replacement for your existing function.
+# The other solver functions do not need to be changed.
+
+def interpolate_face_velocity(phi_cell1, phi_cell2):
+    """Simple linear interpolation to face center."""
+    return 0.5 * (phi_cell1 + phi_cell2)
+
+def calculate_continuity_residual_actual_vectorized(u_star_field, v_star_field, rho, grid, U_in):
+    """
+    Calculates the continuity residual for each control volume based on u* and v*,
+    using vectorized operations and applying a global mass flow correction at the outlet.
+    """
+    n_cells_x = grid.n_cells_x
+    n_cells_y = grid.n_cells_y
+    continuity_residual = np.zeros((n_cells_y, n_cells_x))
+
+    Area_ew = grid.Area_ew
+    Area_ns = grid.Area_ns
+
+    # --- Calculate Mass Fluxes across Faces (Vectorized) ---
+
+    # West Face (Inlet)
+    u_face_w_star = np.zeros((n_cells_y, n_cells_x))
+    inlet_y_indices = np.where(grid.y_cc[:, 0] <= grid.Ly_in + 1e-9)[0]
+    u_face_w_star[inlet_y_indices, 0] = U_in
+    u_face_w_star[:, 1:] = interpolate_face_velocity(u_star_field[:, :-1], u_star_field[:, 1:])
+    Mass_w = rho * u_face_w_star * Area_ew
+
+    # East Face (Outlet) - Initial Calculation
+    u_face_e_star = np.zeros((n_cells_y, n_cells_x))
+    u_face_e_star[:, :-1] = interpolate_face_velocity(u_star_field[:, :-1], u_star_field[:, 1:])
+    u_face_e_star[:, -1] = u_star_field[:, -1] # Simple extrapolation
+    
+    # --- Global Mass Flow Correction (The Fix) ---
+    total_mass_in = np.sum(Mass_w[:, 0])
+    total_mass_out_initial = np.sum(rho * u_face_e_star[:, -1] * Area_ew)
+    mass_imbalance = total_mass_in - total_mass_out_initial
+
+    # Correct the outlet face velocities to enforce global mass conservation.
+    # This distributes the imbalance across the outlet faces by scaling.
+    if np.abs(total_mass_out_initial) > 1e-12: # Avoid division by zero
+        correction_factor = total_mass_in / total_mass_out_initial
+        u_face_e_star[:, -1] *= correction_factor
+    
+    Mass_e = rho * u_face_e_star * Area_ew
+    # --- End of Fix ---
+
+    # South Face (Bottom Wall)
+    v_face_s_star = np.zeros((n_cells_y, n_cells_x))
+    v_face_s_star[1:, :] = interpolate_face_velocity(v_star_field[:-1, :], v_star_field[1:, :])
+    v_face_s_star[0, :] = 0.0
+    Mass_s = rho * v_face_s_star * Area_ns
+
+    # North Face (Top Wall)
+    v_face_n_star = np.zeros((n_cells_y, n_cells_x))
+    v_face_n_star[:-1, :] = interpolate_face_velocity(v_star_field[:-1, :], v_star_field[1:, :])
+    v_face_n_star[-1, :] = 0.0
+    Mass_n = rho * v_face_n_star * Area_ns
+
+    # Continuity Residual (Mass imbalance = Mass_in - Mass_out)
+    continuity_residual = (Mass_w + Mass_s) - (Mass_e + Mass_n)
+
+    # For cells outside the fluid domain (top-left corner), set residual to 0
+    is_expansion_wall_cell = np.zeros((n_cells_y, n_cells_x), dtype=bool)
+    is_expansion_wall_cell[np.where(grid.Y_cc > grid.Ly_in + 1e-9)[0][:, np.newaxis],
+                           np.where(grid.X_cc < grid.Lx_expansion - 1e-9)[0]] = True
+    continuity_residual[is_expansion_wall_cell] = 0.0
+
+    return continuity_residual
+

@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SolverConfig",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "nx", "ny", "lx", "ly", "Re", "solver", "max_iter", "tol"],
+  "properties": {
+    "schema_version": {"type": "integer", "enum": [1]},
+    "nx": {"type": "integer", "minimum": 1},
+    "ny": {"type": "integer", "minimum": 1},
+    "lx": {"type": "number", "exclusiveMinimum": 0},
+    "ly": {"type": "number", "exclusiveMinimum": 0},
+    "Re": {"type": "number", "exclusiveMinimum": 0},
+    "solver": {"type": "string", "enum": ["pyfoam", "finitude", "physical", "synthetic_step", "multigrid"], "description": "Primary solver selection"},
+    "max_iter": {"type": "integer", "minimum": 1},
+    "tol": {"type": "number", "exclusiveMinimum": 0},
+    "cfl_target": {"type": "number", "minimum": 0},
+    "cfl_growth": {"type": "number", "minimum": 1},
+    "relax_u": {"type": "number", "minimum": 0, "maximum": 1},
+    "relax_p": {"type": "number", "minimum": 0, "maximum": 1},
+    "lin_tol": {"type": "number", "exclusiveMinimum": 0},
+    "lin_maxiter": {"type": "integer", "minimum": 1},
+    "lid_velocity": {"type": "number"},
+    "disable_advection": {"type": "boolean"},
+    "test_mode": {"type": "boolean"},
+    "keep_lid_corners": {"type": "boolean"},
+    "advection_scheme": {"type": "string", "enum": ["upwind", "quick"]},
+    "preconditioner": {"type": "string", "enum": ["none", "jacobi", "ilu"], "default": "none", "description": "Preconditioner for pressure Poisson solve"}
+  }
+}

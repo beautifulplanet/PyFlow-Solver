@@ -1,0 +1,24 @@
+The specific implementation details you are looking for are available within the Dosidon framework's documentation. Here are the algorithms, numerical methods, and procedures that the solver should implement:
+
+### **1. Time Integration and Discretization Methods**
+
+* **Time Integration Scheme**: The solver should use a robust **Implicit-Explicit (IMEX) time integration scheme**. This choice is critical for stability and efficiency, as it handles the different types of terms in the ΨΦ-derived Navier-Stokes equations:
+    * **Implicit Component**: The stiff terms, which include the **hyper-viscosity ($\nabla^4 \mathbf{u}$) and pressure gradient ($\nabla p$)**, should be treated implicitly for maximum numerical stability. This allows the solver to take larger time steps without becoming unstable.
+    * **Explicit Component**: The non-linear **convective term ($(\mathbf{u} \cdot \nabla) \mathbf{u}$)** should be treated explicitly for computational efficiency.
+* **Spatial Discretization**: A **high-order Spectral Element Method (SEM)** is the primary recommended method for spatial discretization. SEM offers exponential convergence for smooth solutions, which is ideal for confirming the inherent smoothness guaranteed by the ΨΦ framework and accurately implementing the higher-order derivative terms.
+
+### **2. Incompressibility Constraint and Linear System Solution**
+
+* **Enforcing Incompressibility**: The most effective method for enforcing the incompressibility constraint ($\nabla \cdot \mathbf{u} = 0$) within the IMEX time integration scheme is a **projection method**.
+* **Pressure-Poisson Equation**: This method involves solving a linear system for a pressure field at each time step, often in the form of a **pressure-Poisson equation**. The pressure field acts as a Lagrange multiplier to enforce the divergence-free condition on the velocity field.
+* **Solving Linear Systems**: The resulting linear system from the pressure-Poisson equation can be solved using efficient iterative techniques (e.g., Conjugate Gradient Method) or direct solvers, depending on the scale and complexity of the problem.
+
+### **3. Detailed Simulation Loop Steps**
+
+The solver's main simulation loop, which advances the solution from one time step ($t^n$) to the next ($t^{n+1}$), should conceptually follow these steps:
+
+1.  **Advance Convective Terms**: Explicitly calculate the convective term at time $t^n$ and use it to predict an intermediate velocity field.
+2.  **Implicit Solve**: Solve the implicit part of the equation, which includes the hyper-viscosity and pressure terms, to obtain a temporary velocity field.
+3.  **Pressure Projection**: Use the temporary velocity field to solve the pressure-Poisson equation and project the velocity field to be divergence-free, satisfying the incompressibility constraint.
+4.  **Update Fields**: Update the velocity and pressure fields to the new time step $t^{n+1}$.
+5.  **Apply Boundary Conditions**: Enforce the ΨΦ-derived boundary conditions (e.g., no-slip) at every time step, which emerge from the fundamental ΨΦ coupling at the fluid-solid interface.

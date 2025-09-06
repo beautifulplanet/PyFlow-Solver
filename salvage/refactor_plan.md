@@ -1,0 +1,204 @@
+# Refactor Plan
+Grouped by theme (solver, assembly, pressure, field, generic).
+
+## solver (30)
+- Colab\cfd_v021.py::solve_simple complexity=145 length=280
+- Colab\cfd_v023.py::solve_simple complexity=145 length=280
+- VS Studio\pyfoamclone\cases\cfd_v023.py::solve_simple complexity=145 length=280
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v021.py::solve_simple complexity=145 length=280
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::solve_simple complexity=145 length=280
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\VS PY\Solver #2\pyflow_solver\pyflow\solver.py::solve_lid_driven_cavity complexity=122 length=210
+- VS Studio\pythA\VS PY\Solver #2\pyflow_solver\pyflow\solver.py::solve_lid_driven_cavity complexity=122 length=210
+- Colab\cfd_v021.py::solve_simple complexity=107 length=217
+- Colab\cfd_v021.py::solve_simple complexity=107 length=217
+- Colab\cfd_v023.py::solve_simple complexity=107 length=217
+- Colab\cfd_v023.py::solve_simple complexity=107 length=217
+- Colab\cfd_v023.py::solve_simple complexity=107 length=217
+- Colab\cfd_v023.py::solve_simple complexity=107 length=217
+- Colab\cfd_v023.py::solve_simple complexity=107 length=217
+- VS Studio\pyfoamclone\cases\cfd_v023.py::solve_simple complexity=107 length=217
+- VS Studio\pyfoamclone\cases\cfd_v023.py::solve_simple complexity=107 length=217
+- VS Studio\pyfoamclone\cases\cfd_v023.py::solve_simple complexity=107 length=217
+- VS Studio\pyfoamclone\cases\cfd_v023.py::solve_simple complexity=107 length=217
+- VS Studio\pyfoamclone\cases\cfd_v023.py::solve_simple complexity=107 length=217
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v021.py::solve_simple complexity=107 length=217
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v021.py::solve_simple complexity=107 length=217
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::solve_simple complexity=107 length=217
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::solve_simple complexity=107 length=217
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::solve_simple complexity=107 length=217
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::solve_simple complexity=107 length=217
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::solve_simple complexity=107 length=217
+- Colab\lid_a1_ (1).py::solve_lid_driven_cavity complexity=73 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\lid_a1_ (1).py::solve_lid_driven_cavity complexity=73 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\VS PY\Solver #2\pyflow_solver\pyflow\solver.py::_simulation_step complexity=65 length=174
+- VS Studio\pythA\VS PY\Solver #2\pyflow_solver\pyflow\solver.py::_simulation_step complexity=65 length=174
+
+## assembly (82)
+- Colab\cfd_v021.py::assemble_momentum_matrix complexity=142 length=341
+- Colab\cfd_v023.py::assemble_momentum_matrix complexity=142 length=341
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_momentum_matrix complexity=142 length=341
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v021.py::assemble_momentum_matrix complexity=142 length=341
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_momentum_matrix complexity=142 length=341
+- Colab\cfd_v021.py::assemble_pressure_correction_matrix complexity=129 length=201
+- Colab\cfd_v021.py::assemble_pressure_correction_matrix complexity=129 length=201
+- Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v021.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v021.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=129 length=201
+- Colab\cfd_v021.py::assemble_pressure_correction_matrix complexity=128 length=196
+- Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=128 length=196
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_pressure_correction_matrix complexity=128 length=196
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v021.py::assemble_pressure_correction_matrix complexity=128 length=196
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=128 length=196
+- Colab\cfd_v021.py::assemble_pressure_correction_matrix complexity=124 length=232
+- Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=124 length=232
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_pressure_correction_matrix complexity=124 length=232
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v021.py::assemble_pressure_correction_matrix complexity=124 length=232
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_pressure_correction_matrix complexity=124 length=232
+- Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix_actual_with_diag_vectorized complexity=98 length=209
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix_actual_with_diag_vectorized complexity=98 length=209
+- Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix_actual_with_diag_vectorized complexity=97 length=207
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix_actual_with_diag_vectorized complexity=97 length=207
+- Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix_actual complexity=93 length=176
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix_actual complexity=93 length=176
+- Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix_actual_with_diag complexity=89 length=187
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix_actual_with_diag complexity=89 length=187
+- Colab\cfd_v021.py::assemble_momentum_matrix complexity=83 length=201
+- Colab\cfd_v021.py::assemble_momentum_matrix complexity=83 length=201
+- Colab\cfd_v021.py::assemble_momentum_matrix complexity=83 length=201
+- Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pyfoamclone\cases\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v021.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v021.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v021.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cfd_v023.py::assemble_momentum_matrix complexity=83 length=201
+- Colab\py cfd\pycfdflow2.py::assemble_pressure_correction_matrix_actual complexity=78 length=110
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::assemble_pressure_correction_matrix_actual complexity=78 length=110
+- Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix_actual_with_diag_vectorized complexity=77 length=173
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix_actual_with_diag_vectorized complexity=77 length=173
+- Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix complexity=68 length=84
+- Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix complexity=68 length=84
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix complexity=68 length=84
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::assemble_momentum_matrix complexity=68 length=84
+- Colab\py cfd\pycfdflow2.py::assemble_pressure_correction_matrix_actual_vectorized complexity=63 length=142
+- Colab\py cfd\pycfdflow2.py::assemble_pressure_correction_matrix_actual_vectorized complexity=63 length=142
+- Colab\py cfd\pycfdflow2.py::assemble_pressure_correction_matrix_actual_vectorized complexity=63 length=142
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::assemble_pressure_correction_matrix_actual_vectorized complexity=63 length=142
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::assemble_pressure_correction_matrix_actual_vectorized complexity=63 length=142
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::assemble_pressure_correction_matrix_actual_vectorized complexity=63 length=142
+
+## generic (84)
+- Colab\cpdail\finitude_language_12.py::parse_expression complexity=72 length=101
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\finitude_language_12.py::parse_expression complexity=72 length=101
+- Colab\cpdail\cpsail_finitude_version_0_003_14.py::run_test_suite complexity=68 length=108
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_version_0_003_14.py::run_test_suite complexity=68 length=108
+- Colab\cpdail\cpsail_finitude_version_0_003_14.py::evaluate complexity=67 length=97
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_version_0_003_14.py::evaluate complexity=67 length=97
+- Colab\cpdail\the_finity_cryptic_framework_v1 (1).py::evaluate complexity=63 length=51
+- Colab\cpdail\the_finity_cryptic_framework_v1.py::evaluate complexity=63 length=51
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\the_finity_cryptic_framework_v1 (1).py::evaluate complexity=63 length=51
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\the_finity_cryptic_framework_v1.py::evaluate complexity=63 length=51
+- Colab\cpdail\cpsail_finitude_version_0_003_14.py::run_test_suite complexity=60 length=94
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_version_0_003_14.py::run_test_suite complexity=60 length=94
+- Colab\cpdail\cpsail_finitude_14 (1).py::parse_statement complexity=59 length=123
+- Colab\cpdail\cpsail_finitude_14 (2).py::parse_statement complexity=59 length=123
+- Colab\cpdail\cpsail_finitude_14 (3).py::parse_statement complexity=59 length=123
+- Colab\cpdail\cpsail_finitude_14.py::parse_statement complexity=59 length=123
+- Colab\cpdail\cpsail_finitude_version_0_003_14.py::parse_statement complexity=59 length=123
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (1).py::parse_statement complexity=59 length=123
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (2).py::parse_statement complexity=59 length=123
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (3).py::parse_statement complexity=59 length=123
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14.py::parse_statement complexity=59 length=123
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_version_0_003_14.py::parse_statement complexity=59 length=123
+- Colab\cpdail\the_finity_cryptic_framework_v1 (1).py::evaluate complexity=56 length=73
+- Colab\cpdail\the_finity_cryptic_framework_v1.py::evaluate complexity=56 length=73
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\the_finity_cryptic_framework_v1 (1).py::evaluate complexity=56 length=73
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\the_finity_cryptic_framework_v1.py::evaluate complexity=56 length=73
+- Colab\cpdail\cpsail_finitude_14 (1).py::evaluate complexity=52 length=91
+- Colab\cpdail\cpsail_finitude_14 (1).py::evaluate complexity=52 length=91
+- Colab\cpdail\cpsail_finitude_14 (2).py::evaluate complexity=52 length=91
+- Colab\cpdail\cpsail_finitude_14 (2).py::evaluate complexity=52 length=91
+- Colab\cpdail\cpsail_finitude_14 (3).py::evaluate complexity=52 length=91
+- Colab\cpdail\cpsail_finitude_14 (3).py::evaluate complexity=52 length=91
+- Colab\cpdail\cpsail_finitude_14.py::evaluate complexity=52 length=91
+- Colab\cpdail\cpsail_finitude_14.py::evaluate complexity=52 length=91
+- Colab\cpdail\cpsail_finitude_version_0_003_14.py::evaluate complexity=52 length=91
+- Colab\cpdail\cpsail_finitude_version_0_003_14.py::evaluate complexity=52 length=91
+- Colab\cpdail\finitude_language_12 (1).py::evaluate complexity=52 length=91
+- Colab\cpdail\finitude_language_12 (1).py::evaluate complexity=52 length=91
+- Colab\cpdail\finitude_language_12.py::evaluate complexity=52 length=91
+- Colab\cpdail\finitude_language_12.py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (1).py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (1).py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (2).py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (2).py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (3).py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (3).py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14.py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14.py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_version_0_003_14.py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_version_0_003_14.py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\finitude_language_12 (1).py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\finitude_language_12 (1).py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\finitude_language_12.py::evaluate complexity=52 length=91
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\finitude_language_12.py::evaluate complexity=52 length=91
+- Colab\cpdail\cpsail_finitude_14 (1).py::parse_expression complexity=52 length=71
+- Colab\cpdail\cpsail_finitude_14 (1).py::parse_expression complexity=52 length=71
+- Colab\cpdail\cpsail_finitude_14 (2).py::parse_expression complexity=52 length=71
+- Colab\cpdail\cpsail_finitude_14 (2).py::parse_expression complexity=52 length=71
+- Colab\cpdail\cpsail_finitude_14 (3).py::parse_expression complexity=52 length=71
+- Colab\cpdail\cpsail_finitude_14 (3).py::parse_expression complexity=52 length=71
+- Colab\cpdail\cpsail_finitude_14.py::parse_expression complexity=52 length=71
+- Colab\cpdail\cpsail_finitude_14.py::parse_expression complexity=52 length=71
+- Colab\cpdail\cpsail_finitude_version_0_003_14.py::parse_expression complexity=52 length=71
+- Colab\cpdail\cpsail_finitude_version_0_003_14.py::parse_expression complexity=52 length=71
+- Colab\cpdail\finitude_language_12 (1).py::parse_expression complexity=52 length=71
+- Colab\cpdail\finitude_language_12.py::parse_expression complexity=52 length=71
+- Colab\cpdail\the_finity_cryptic_framework_v1 (1).py::evaluate complexity=52 length=71
+- Colab\cpdail\the_finity_cryptic_framework_v1.py::evaluate complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (1).py::parse_expression complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (1).py::parse_expression complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (2).py::parse_expression complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (2).py::parse_expression complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (3).py::parse_expression complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14 (3).py::parse_expression complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14.py::parse_expression complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_14.py::parse_expression complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_version_0_003_14.py::parse_expression complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\cpsail_finitude_version_0_003_14.py::parse_expression complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\finitude_language_12 (1).py::parse_expression complexity=52 length=71
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\cpdail\finitude_language_12.py::parse_expression complexity=52 length=71
+
+## pressure (4)
+- Colab\py cfd\pycfdflow2.py::update_velocity_from_pressure_correction complexity=68 length=124
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::update_velocity_from_pressure_correction complexity=68 length=124
+- Colab\py cfd\pycfdflow2.py::update_velocity_from_pressure_correction complexity=66 length=116
+- VS Studio\pythA\VS PY\CFD_Engine\src\Frameworks and fail logs\Colab\py cfd\pycfdflow2.py::update_velocity_from_pressure_correction complexity=66 length=116

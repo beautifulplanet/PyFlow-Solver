@@ -1,0 +1,980 @@
+{
+  "generate_deeper_analysis": [
+    "__future__",
+    "collections",
+    "csv",
+    "datetime",
+    "json",
+    "math",
+    "os",
+    "pathlib"
+  ],
+  "generate_learning_dataset": [
+    "__future__",
+    "ast",
+    "datetime",
+    "hashlib",
+    "json",
+    "math",
+    "nbformat",
+    "os",
+    "pathlib",
+    "re",
+    "typing",
+    "warnings"
+  ],
+  "generate_learning_dataset_extended": [
+    "__future__",
+    "ast",
+    "collections",
+    "csv",
+    "datetime",
+    "hashlib",
+    "json",
+    "os",
+    "pathlib",
+    "re",
+    "warnings"
+  ],
+  "postmortem_workspace": [
+    "collections",
+    "json",
+    "os"
+  ],
+  "workspace_full_scan": [
+    "json",
+    "nbformat",
+    "os",
+    "pathlib"
+  ],
+  "Colab.cfd_v021": [
+    "matplotlib",
+    "numpy",
+    "scipy"
+  ],
+  "Colab.cfd_v023": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pandas",
+    "scipy"
+  ],
+  "Colab.lid_ (1)": [
+    "matplotlib",
+    "numpy",
+    "scipy",
+    "types"
+  ],
+  "Colab.lid_": [
+    "matplotlib",
+    "numpy",
+    "scipy",
+    "types"
+  ],
+  "Colab.lid_a1_ (1)": [
+    "matplotlib",
+    "numpy",
+    "scipy",
+    "time",
+    "types"
+  ],
+  "Colab.lid_a1_": [
+    "matplotlib",
+    "numpy",
+    "scipy",
+    "types"
+  ],
+  "Colab._12": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "Colab.cpdail.cpsail_finitude_14 (1)": [
+    "re",
+    "sys"
+  ],
+  "Colab.cpdail.cpsail_finitude_14 (2)": [
+    "re",
+    "sys"
+  ],
+  "Colab.cpdail.cpsail_finitude_14 (3)": [
+    "re",
+    "sys",
+    "traceback"
+  ],
+  "Colab.cpdail.cpsail_finitude_14": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "Colab.cpdail.cpsail_finitude_version_0_003_14": [
+    "re",
+    "sys",
+    "traceback"
+  ],
+  "Colab.cpdail.cpsail_prototype_ (1)": [
+    "numpy",
+    "pandas",
+    "scipy"
+  ],
+  "Colab.cpdail.cpsail_prototype_ (2)": [
+    "numpy",
+    "pandas",
+    "scipy"
+  ],
+  "Colab.cpdail.cpsail_prototype_": [
+    "numpy",
+    "pandas",
+    "scipy"
+  ],
+  "Colab.cpdail.finitude_language_12 (1)": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "Colab.cpdail.finitude_language_12": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "Colab.cpdail.the_finity_cryptic_framework_v1 (1)": [
+    "re"
+  ],
+  "Colab.cpdail.the_finity_cryptic_framework_v1": [
+    "re"
+  ],
+  "Colab.cpdail.the_finity_framework_v1": [
+    "re"
+  ],
+  "Colab.cpdail._12 (1)": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "Colab.cpdail._12": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "Colab.py cfd.pycfdflow2": [
+    "json",
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow",
+    "scipy",
+    "subprocess",
+    "sys"
+  ],
+  "pyfoamclone.pyfoamclone.__init__": [],
+  "pyfoamclone.pyfoamclone.boundary_conditions.__init__": [],
+  "pyfoamclone.pyfoamclone.core.field": [
+    "numpy"
+  ],
+  "pyfoamclone.pyfoamclone.core.__init__": [],
+  "pyfoamclone.pyfoamclone.io.__init__": [],
+  "pyfoamclone.pyfoamclone.mesh.grid": [
+    "numpy"
+  ],
+  "pyfoamclone.pyfoamclone.mesh.__init__": [],
+  "pyfoamclone.pyfoamclone.numerics.__init__": [],
+  "pyfoamclone.pyfoamclone.solvers.__init__": [],
+  "pyfoamclone.tests.test_core": [
+    "numpy",
+    "pyfoamclone"
+  ],
+  "pyfoamclone.tests.test_mesh": [
+    "numpy",
+    "pyfoamclone"
+  ],
+  "pyfoamclone.tests.__init__": [],
+  "VS Studio.pyfoamclone.setup": [
+    "setuptools"
+  ],
+  "VS Studio.pyfoamclone.cases.cfd_v023": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pandas",
+    "scipy"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.chimera.boundary_conditions": [
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.chimera.grid": [
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.chimera.__init__": [],
+  "VS Studio.pyfoamclone.chimera_cfd.chimera.solvers.base_solver": [
+    "abc"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.chimera.solvers.finitude_solver": [
+    "base_solver",
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.chimera.solvers.pyfoam_solver": [
+    "base_solver",
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.chimera.solvers.__init__": [],
+  "VS Studio.pyfoamclone.chimera_cfd.chimera.utils.visualization": [
+    "matplotlib",
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.chimera.utils.__init__": [],
+  "VS Studio.pyfoamclone.chimera_cfd.scripts.run_simulation": [
+    "chimera",
+    "json",
+    "os",
+    "sys"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.tests.test_benchmarks": [
+    "chimera",
+    "numpy",
+    "os",
+    "pytest",
+    "sys"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.tests.test_config": [
+    "json",
+    "os"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.tests.test_full_pipeline": [
+    "os",
+    "pytest",
+    "subprocess",
+    "sys"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.tests.test_solvers": [
+    "chimera",
+    "numpy",
+    "os",
+    "pytest",
+    "sys"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.tests.test_utils": [
+    "chimera",
+    "matplotlib",
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.tests.test_workspace": [
+    "importlib",
+    "os"
+  ],
+  "VS Studio.pyfoamclone.chimera_cfd.tests.__init__": [],
+  "VS Studio.pyfoamclone.pyfoamclone.__init__": [],
+  "VS Studio.pyfoamclone.pyfoamclone.benchmarks.data": [
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.benchmarks.__init__": [
+    "data"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.boundary_conditions.__init__": [],
+  "VS Studio.pyfoamclone.pyfoamclone.chimera.boundary_conditions": [
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.chimera.grid": [
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.chimera.__init__": [],
+  "VS Studio.pyfoamclone.pyfoamclone.chimera.solvers.finite_solver": [
+    "benchmarks",
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.chimera.solvers.pyfoam_solver": [
+    "benchmarks",
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.chimera.solvers.__init__": [
+    "finite_solver",
+    "pyfoam_solver"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.chimera.utils.visualization": [
+    "matplotlib",
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.chimera.utils.__init__": [],
+  "VS Studio.pyfoamclone.pyfoamclone.core.field": [
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.core.__init__": [
+    "field"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.io.__init__": [],
+  "VS Studio.pyfoamclone.pyfoamclone.mesh.grid": [
+    "numpy"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.mesh.__init__": [],
+  "VS Studio.pyfoamclone.pyfoamclone.numerics.__init__": [],
+  "VS Studio.pyfoamclone.pyfoamclone.scripts.run_simulation": [
+    "json",
+    "os",
+    "sys"
+  ],
+  "VS Studio.pyfoamclone.pyfoamclone.solvers.__init__": [
+    "finite_solver",
+    "pyfoam_solver"
+  ],
+  "VS Studio.pyfoamclone.scripts.run_simulation": [
+    "json",
+    "os",
+    "sys"
+  ],
+  "VS Studio.pyfoamclone.tests.conftest": [
+    "pytest"
+  ],
+  "VS Studio.pyfoamclone.tests.test_benchmarks": [
+    "numpy",
+    "pyfoamclone",
+    "pytest"
+  ],
+  "VS Studio.pyfoamclone.tests.test_config": [
+    "json",
+    "os"
+  ],
+  "VS Studio.pyfoamclone.tests.test_core": [
+    "numpy",
+    "pyfoamclone"
+  ],
+  "VS Studio.pyfoamclone.tests.test_full_pipeline": [
+    "os",
+    "pytest",
+    "subprocess",
+    "sys"
+  ],
+  "VS Studio.pyfoamclone.tests.test_mesh": [
+    "numpy",
+    "pyfoamclone"
+  ],
+  "VS Studio.pyfoamclone.tests.test_solvers": [
+    "numpy",
+    "os",
+    "pyfoamclone",
+    "pytest",
+    "sys"
+  ],
+  "VS Studio.pyfoamclone.tests.test_utils": [
+    "matplotlib",
+    "numpy",
+    "pyfoamclone"
+  ],
+  "VS Studio.pyfoamclone.tests.test_workspace": [
+    "importlib",
+    "os"
+  ],
+  "VS Studio.pyfoamclone.tests.__init__": [],
+  "VS Studio.pythA.dosidon_axioms": [
+    "numpy"
+  ],
+  "VS Studio.pythA.dosidon_sem": [
+    "dosidon_axioms",
+    "numpy",
+    "scipy"
+  ],
+  "VS Studio.pythA.dosidon_solver": [
+    "dosidon_axioms",
+    "dosidon_sem",
+    "numpy",
+    "scipy"
+  ],
+  "VS Studio.pythA.test_dosidon_solver": [
+    "dosidon_solver",
+    "numpy",
+    "unittest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cfd_v021": [
+    "matplotlib",
+    "numpy",
+    "scipy"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cfd_v023": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pandas",
+    "scipy"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.lid_ (1)": [
+    "matplotlib",
+    "numpy",
+    "scipy",
+    "types"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.lid_": [
+    "matplotlib",
+    "numpy",
+    "scipy",
+    "types"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.lid_a1_ (1)": [
+    "matplotlib",
+    "numpy",
+    "scipy",
+    "time",
+    "types"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.lid_a1_": [
+    "matplotlib",
+    "numpy",
+    "scipy",
+    "types"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab._12": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.cpsail_finitude_14 (1)": [
+    "re",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.cpsail_finitude_14 (2)": [
+    "re",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.cpsail_finitude_14 (3)": [
+    "re",
+    "sys",
+    "traceback"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.cpsail_finitude_14": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.cpsail_finitude_version_0_003_14": [
+    "re",
+    "sys",
+    "traceback"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.cpsail_prototype_ (1)": [
+    "numpy",
+    "pandas",
+    "scipy"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.cpsail_prototype_ (2)": [
+    "numpy",
+    "pandas",
+    "scipy"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.cpsail_prototype_": [
+    "numpy",
+    "pandas",
+    "scipy"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.finitude_language_12 (1)": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.finitude_language_12": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.the_finity_cryptic_framework_v1 (1)": [
+    "re"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.the_finity_cryptic_framework_v1": [
+    "re"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail.the_finity_framework_v1": [
+    "re"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail._12 (1)": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.cpdail._12": [
+    "numpy",
+    "re",
+    "sys",
+    "unittest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.Colab.py cfd.pycfdflow2": [
+    "json",
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow",
+    "scipy",
+    "subprocess",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #1.Version 0.boundary.__init__": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #1.Version 0.field.__init__": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #1.Version 0.grid.structured": [
+    "numpy"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #1.Version 0.grid.__init__": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #1.Version 0.io.__init__": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #1.Version 0.solver.__init__": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #1.Version 0.tests.test_structured_grid": [
+    "grid",
+    "numpy",
+    "unittest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #1.Version 0.tests.__init__": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #1.Version 0.visualization.__init__": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.benchmark_hybrid": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow",
+    "sys",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.cfl_analysis": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow",
+    "sys",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.cfl_one_step": [
+    "matplotlib",
+    "numba",
+    "numpy",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.cfl_step_analysis": [
+    "matplotlib",
+    "numba",
+    "numpy"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.get-pip": [
+    "argparse",
+    "base64",
+    "importlib",
+    "os",
+    "pip",
+    "pkgutil",
+    "shutil",
+    "sys",
+    "tempfile"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.hybrid_example": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow",
+    "sys",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.setup": [
+    "numpy",
+    "os",
+    "pybind11",
+    "setuptools"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.solver_python": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.test_cpp_cfd": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow_core_cfd",
+    "sys",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.test_cpp_extension": [
+    "numpy",
+    "os",
+    "pyflow_core",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.visualize_flow": [
+    "matplotlib",
+    "numpy",
+    "pyflow",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.pyflow.build_utils": [
+    "numpy",
+    "os",
+    "pybind11",
+    "setuptools",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.pyflow.core": [
+    "numba",
+    "numpy"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.pyflow.grid": [
+    "numpy"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.pyflow.hybrid_solver": [
+    "grid",
+    "numpy",
+    "os",
+    "pyflow_core_cfd",
+    "sys",
+    "warnings"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.pyflow.logging": [
+    "numpy",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.pyflow.residuals": [
+    "matplotlib",
+    "numpy",
+    "typing"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.pyflow.solver": [
+    "logging",
+    "numba",
+    "numpy",
+    "typing"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.pyflow.__init__": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.scripts.grid_independence_study": [
+    "argparse",
+    "matplotlib",
+    "numpy",
+    "os",
+    "pathlib",
+    "pyflow",
+    "sys",
+    "tabulate"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.scripts.run_benchmark": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.scripts.visualize_flow": [
+    "argparse",
+    "matplotlib",
+    "numpy",
+    "os",
+    "pathlib",
+    "pyflow",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_advanced_solver": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_granular": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_quick": [
+    "numpy",
+    "pyflow",
+    "pytest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_suite": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_suite_split": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_ultrafine": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_ultrafine_expanded": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_comprehensive": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_core": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_cpp_interface": [
+    "numpy",
+    "os",
+    "pyflow_core_cfd",
+    "pytest",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_diagnostics": [
+    "matplotlib",
+    "numpy",
+    "pyflow",
+    "pytest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_diagnostics_timed": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_grid": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_health": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_import": [
+    "pyflow",
+    "pytest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_module_imports": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_quick_diagnostics": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_runner": [],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_simple": [
+    "numpy",
+    "pyflow",
+    "pytest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_solver": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow",
+    "pytest",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver.tests.test_validation": [
+    "numpy",
+    "pyflow_solver",
+    "pytest"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #2.pyflow_solver._cpp_core.setup": [
+    "os",
+    "pybind11",
+    "setuptools",
+    "sys",
+    "tempfile"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #3.app": [
+    "os",
+    "subprocess",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #3.test_menu": [
+    "os",
+    "subprocess",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #3.post.run_and_plot": [
+    "matplotlib",
+    "numpy",
+    "pathlib",
+    "subprocess"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.src.Frameworks and fail logs.VS PY.Solver #3.validation.validate": [
+    "matplotlib",
+    "numpy",
+    "pathlib",
+    "re",
+    "subprocess"
+  ],
+  "VS Studio.pythA.VS PY.CFD_Engine.tests.run_cpp_tests": [
+    "subprocess",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.Solver #1.Version 0.boundary.__init__": [],
+  "VS Studio.pythA.VS PY.Solver #1.Version 0.field.__init__": [],
+  "VS Studio.pythA.VS PY.Solver #1.Version 0.grid.structured": [
+    "numpy"
+  ],
+  "VS Studio.pythA.VS PY.Solver #1.Version 0.grid.__init__": [],
+  "VS Studio.pythA.VS PY.Solver #1.Version 0.io.__init__": [],
+  "VS Studio.pythA.VS PY.Solver #1.Version 0.solver.__init__": [],
+  "VS Studio.pythA.VS PY.Solver #1.Version 0.tests.test_structured_grid": [
+    "grid",
+    "numpy",
+    "unittest"
+  ],
+  "VS Studio.pythA.VS PY.Solver #1.Version 0.tests.__init__": [],
+  "VS Studio.pythA.VS PY.Solver #1.Version 0.visualization.__init__": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.benchmark_hybrid": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow",
+    "sys",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.cfl_analysis": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow",
+    "sys",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.cfl_one_step": [
+    "matplotlib",
+    "numba",
+    "numpy",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.cfl_step_analysis": [
+    "matplotlib",
+    "numba",
+    "numpy"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.get-pip": [
+    "argparse",
+    "base64",
+    "importlib",
+    "os",
+    "pip",
+    "pkgutil",
+    "shutil",
+    "sys",
+    "tempfile"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.hybrid_example": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow",
+    "sys",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.setup": [
+    "numpy",
+    "os",
+    "pybind11",
+    "setuptools"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.solver_python": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.test_cpp_cfd": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow_core_cfd",
+    "sys",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.test_cpp_extension": [
+    "numpy",
+    "os",
+    "pyflow_core",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.visualize_flow": [
+    "matplotlib",
+    "numpy",
+    "pyflow",
+    "time"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.pyflow.build_utils": [
+    "numpy",
+    "os",
+    "pybind11",
+    "setuptools",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.pyflow.core": [
+    "numba",
+    "numpy"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.pyflow.grid": [
+    "numpy"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.pyflow.hybrid_solver": [
+    "grid",
+    "numpy",
+    "os",
+    "pyflow_core_cfd",
+    "sys",
+    "warnings"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.pyflow.logging": [
+    "numpy",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.pyflow.residuals": [
+    "matplotlib",
+    "numpy",
+    "typing"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.pyflow.solver": [
+    "logging",
+    "numba",
+    "numpy",
+    "typing"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.pyflow.__init__": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.scripts.grid_independence_study": [
+    "argparse",
+    "matplotlib",
+    "numpy",
+    "os",
+    "pathlib",
+    "pyflow",
+    "sys",
+    "tabulate"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.scripts.run_benchmark": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.scripts.visualize_flow": [
+    "argparse",
+    "matplotlib",
+    "numpy",
+    "os",
+    "pathlib",
+    "pyflow",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_advanced_solver": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_granular": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_quick": [
+    "numpy",
+    "pyflow",
+    "pytest"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_suite": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_suite_split": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_ultrafine": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_benchmark_ultrafine_expanded": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_comprehensive": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_core": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_cpp_interface": [
+    "numpy",
+    "os",
+    "pyflow_core_cfd",
+    "pytest",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_diagnostics": [
+    "matplotlib",
+    "numpy",
+    "pyflow",
+    "pytest"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_diagnostics_timed": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_grid": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_health": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_import": [
+    "pyflow",
+    "pytest"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_module_imports": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_quick_diagnostics": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_runner": [],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_simple": [
+    "numpy",
+    "pyflow",
+    "pytest"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_solver": [
+    "matplotlib",
+    "numpy",
+    "os",
+    "pyflow",
+    "pytest",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver.tests.test_validation": [
+    "numpy",
+    "pyflow_solver",
+    "pytest"
+  ],
+  "VS Studio.pythA.VS PY.Solver #2.pyflow_solver._cpp_core.setup": [
+    "os",
+    "pybind11",
+    "setuptools",
+    "sys",
+    "tempfile"
+  ],
+  "VS Studio.pythA.VS PY.Solver #3.app": [
+    "os",
+    "subprocess",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.Solver #3.test_menu": [
+    "os",
+    "subprocess",
+    "sys"
+  ],
+  "VS Studio.pythA.VS PY.Solver #3.post.run_and_plot": [
+    "matplotlib",
+    "numpy",
+    "pathlib",
+    "subprocess"
+  ],
+  "VS Studio.pythA.VS PY.Solver #3.validation.validate": [
+    "matplotlib",
+    "numpy",
+    "pathlib",
+    "re",
+    "subprocess"
+  ]
+}

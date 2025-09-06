@@ -1,0 +1,17 @@
+The Dosidon framework has specific and axiomatically grounded requirements for both boundary and initial conditions. This ensures that the solver's simulations are not only numerically stable but also physically consistent with the underlying ΨΦ Unified Field Theory.
+
+### **Initial Conditions**
+
+The initial state of the simulation must be consistent with the fundamental properties of the ΨΦ field.
+
+* **Divergence-Free Velocity**: The initial velocity field ($\mathbf{u}(t=0)$) must be **divergence-free** ($\nabla \cdot \mathbf{u} = 0$). This is a fundamental, axiomatic requirement of the Dosidon framework for incompressible fluids, and any initial velocity field that is not divergence-free would be considered an unphysical state.
+* **Finitude**: The initial pressure ($p$), velocity ($\mathbf{u}$), and density ($\rho$) fields must be **finite and consistent** with the derived Equation of State (EoS). This is a direct consequence of Axiom 4, the "Rejection of Zero and Infinity," which forbids any unphysical initial states.
+
+### **Boundary Conditions**
+
+Boundary conditions in the Dosidon framework are not just mathematical constraints but emerge from the fundamental **ΨΦ coupling at the interface** between a fluid and another medium (e.g., a solid wall).
+
+* **No-Slip Boundaries**: For a no-slip boundary, the velocity field ($\mathbf{u}$) at the element boundaries touching a domain wall must be set to zero. This condition is not an arbitrary assumption but emerges from the "strong informational adhesion forces" between the fluid's and the solid's ΨΦ field configurations.
+* **Periodic Boundaries**: For periodic boundaries, the solver must enforce that the values and derivatives of the fluid fields on one side of the domain match the other. This is used for simulating bulk fluid behavior without the influence of walls.
+* **Incompressibility at Boundaries**: The incompressibility constraint ($\nabla \cdot \mathbf{u} = 0$) must be enforced at the boundaries as well as within the domain.
+* **Pressure Boundary Conditions**: The solver's projection method, which involves solving the pressure-Poisson equation, will require either Dirichlet (fixed pressure) or Neumann (fixed pressure gradient) boundary conditions for the pressure field.

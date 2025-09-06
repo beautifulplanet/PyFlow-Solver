@@ -1,0 +1,13 @@
+# Fortran build artifacts
+build/
+*.o
+*.mod
+*.exe
+
+# Python
+__pycache__/
+*.pyc
+
+# Editors
+.vscode/
+.DS_Store
