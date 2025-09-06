@@ -1,1 +1,0 @@
-"""LEGACY placeholder (original test moved)."""
