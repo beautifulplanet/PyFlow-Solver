@@ -40,8 +40,8 @@ def test_checkpoint_restart_bitwise_equivalence():
     part_state, diagN = run_steps(cfg, N)
     with tempfile.TemporaryDirectory() as td:
         ck_path = os.path.join(td, 'ck.npz')
-    wall_time = 0.0 if diagN is None else diagN.get('wall_time', 0.0)
-    save_checkpoint(ck_path, part_state, N, wall_time, cfg)
+        wall_time = 0.0 if diagN is None else diagN.get('wall_time', 0.0)
+        save_checkpoint(ck_path, part_state, N, wall_time, cfg)
         # Load and resume
         loaded, meta = load_checkpoint(ck_path)
         assert meta['iteration'] == N
