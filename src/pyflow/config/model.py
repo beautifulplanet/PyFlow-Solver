@@ -35,6 +35,9 @@ class SimulationConfig(BaseModel):
     diagnostics: bool = True
     log_path: str | None = None
     log_stream: Any | None = None  # for in-memory tests; not hashed
+    # Ephemeral runtime suppression flag (set by CLI when --json-stream is used);
+    # excluded from hashing so enabling JSON streaming doesn't alter restart safety hash.
+    force_quiet: bool = False
 
     # Checkpointing
     checkpoint_interval: int | None = Field(None, ge=1)
@@ -72,7 +75,7 @@ class SimulationConfig(BaseModel):
     def hash_payload(self) -> dict:
         # Exclude ephemeral / runtime only fields
         data = self.model_dump()
-        for k in ('log_stream',):
+        for k in ('log_stream','force_quiet'):
             data.pop(k, None)
         return data
 
