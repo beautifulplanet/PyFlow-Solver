@@ -25,3 +25,29 @@ new runtime-only field is added, append it to `EXCLUDED_RUNTIME_FIELDS`.
 A regression test (`tests/test_config_hash_regression.py`) enforces this
 contract by mutating excluded fields and verifying the hash remains stable.
 
+## Quickstart
+
+Run a short simulation with JSON streaming:
+
+```
+python -m pyflow.cli --nx 32 --ny 32 --steps 50 --json-stream > run.jsonl
+```
+
+Restart from a checkpoint (hash enforced):
+
+```
+python -m pyflow.cli --restart checkpoint.npz --steps 100
+```
+
+Benchmark micro performance:
+
+```
+python -m benchmarks.micro_step_benchmark --steps 100 --nx 32 --ny 32
+```
+
+## Restart Workflow
+1. Run with periodic checkpoints: `--checkpoint ckpt.npz --checkpoint-interval 50`.
+2. If interrupted, restart: `--restart ckpt.npz`.
+3. If configuration changes materially, CLI aborts with mismatch details.
+
+
