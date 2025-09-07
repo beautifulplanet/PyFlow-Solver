@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 """PyFlow Phase 2 CLI – control layer over SimulationDriver.
 
 Adds:
@@ -23,132 +22,142 @@ Streaming JSON line schema (stable draft v1):
 import argparse
 import json
 import sys
+from dataclasses import dataclass
+from typing import Any, Optional
 
-from pydantic import ValidationError
-
-from .config.model import ConfigError, SimulationConfig
-from .core.ghost_fields import allocate_state
 from .drivers.simulation_driver import SimulationDriver
+from .core.ghost_fields import allocate_state
 from .residuals.manager import ResidualManager
+from .config.validation import validate_config
+from .config.model import config_hash, EXCLUDED_RUNTIME_FIELDS
+
+@dataclass
+class Config:
+    nx: int
+    ny: int
+    Re: float = 100.0
+    lid_velocity: float = 1.0
+    cfl_target: float = 0.5
+    cfl_growth: float = 1.05
+    advection_scheme: str = "quick"
+    disable_advection: bool = False
+    lin_tol: float = 1e-10
+    lin_maxiter: int = 300
+    diagnostics: bool = False  # suppress verbose step() prints unless requested
+    lx: Optional[float] = None
+    ly: Optional[float] = None
+
+    def __post_init__(self):
+        if self.lx is None:
+            self.lx = float(self.nx - 1)
+        if self.ly is None:
+            self.ly = float(self.ny - 1)
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="PyFlow CLI")
-    sub = p.add_subparsers(dest="command", required=True)
-
-    def add_common(sp: argparse.ArgumentParser):
-        sp.add_argument("--nx", type=int, default=64)
-        sp.add_argument("--ny", type=int, default=64)
-        sp.add_argument("--re", type=float, default=100.0)
-        sp.add_argument("--lid-velocity", type=float, default=1.0)
-        sp.add_argument("--scheme", choices=["quick","upwind"], default="quick")
-        sp.add_argument("--disable-advection", action="store_true")
-        sp.add_argument("--cfl", type=float, default=0.5)
-        sp.add_argument("--cfl-growth", type=float, default=1.05)
-        sp.add_argument("--lin-tol", type=float, default=1e-10)
-        sp.add_argument("--lin-maxiter", type=int, default=300)
-        # 0 means: no periodic checkpoints (mapped to None for model which requires >=1)
-        sp.add_argument("--checkpoint-interval", type=int, default=0)
-        sp.add_argument("--log-jsonl", type=str, default=None)
-        sp.add_argument("--seed", type=int, default=None)
-        sp.add_argument("--diagnostics", action="store_true")
-
-    run_p = sub.add_parser("run", help="Run a simulation")
-    add_common(run_p)
-    run_p.add_argument("--steps", type=int, default=100)
-    run_p.add_argument("--checkpoint", type=str, default=None)
-    run_p.add_argument("--restart", type=str, default=None)
-    run_p.add_argument("--allow-hash-mismatch", action="store_true")
-    run_p.add_argument("--json-stream", action="store_true")
-    run_p.add_argument("--continuity-threshold", type=float, default=None)
-    run_p.add_argument("--progress", action="store_true")
-    run_p.add_argument("--assert-invariants", action="store_true")
-
-    val_p = sub.add_parser("validate", help="Validate and display normalized config")
-    add_common(val_p)
-
-    show_p = sub.add_parser("show-config", help="Show normalized config (hash only)")
-    add_common(show_p)
+    p = argparse.ArgumentParser(description="Run a PyFlow simulation")
+    p.add_argument("--nx", type=int, default=64, help="Interior grid cells in x (default 64)")
+    p.add_argument("--ny", type=int, default=64, help="Interior grid cells in y (default 64)")
+    p.add_argument("--re", type=float, default=100.0, help="Reynolds number")
+    p.add_argument("--lid-velocity", type=float, default=1.0, help="Lid (top) velocity")
+    p.add_argument("--steps", "--max-steps", type=int, default=100, help="Maximum solver steps")
+    p.add_argument("--scheme", choices=["quick", "upwind"], default="quick", help="Advection scheme")
+    p.add_argument("--disable-advection", action="store_true", help="Disable advection predictor stage")
+    p.add_argument("--cfl", type=float, default=0.5, help="Target CFL")
+    p.add_argument("--cfl-growth", type=float, default=1.05, help="CFL growth limiter factor")
+    p.add_argument("--lin-tol", type=float, default=1e-10, help="Linear solver tolerance")
+    p.add_argument("--lin-maxiter", type=int, default=300, help="Linear solver max iterations")
+    p.add_argument("--json-stream", action="store_true", help="Emit per-step JSON lines (dashboard feed)")
+    p.add_argument("--continuity-threshold", type=float, default=None, help="Stop early if continuity residual below this value")
+    p.add_argument("--progress", action="store_true", help="Print per-step compact progress line (ignored with --json-stream)")
+    p.add_argument("--diagnostics", action="store_true", help="Enable verbose internal solver diagnostics printouts")
+    p.add_argument("--checkpoint", type=str, default=None, help="Path to periodic checkpoint (.npz)")
+    p.add_argument("--checkpoint-interval", type=int, default=0, help="Write checkpoint every N iterations (0=off)")
+    p.add_argument("--no-preconditioner", action="store_true", help="Disable automatic Jacobi preconditioner")
+    p.add_argument("--log-jsonl", type=str, default=None, help="Path to structured JSONL log file")
+    p.add_argument("--restart", type=str, default=None, help="Checkpoint file to restart from")
+    p.add_argument("--seed", type=int, default=None, help="Random seed for reproducibility")
+    p.add_argument("--assert-invariants", action="store_true", help="Enable runtime solver invariant assertions")
     return p
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    try:
-        # Map sentinel 0 -> None before constructing config
-        _ck_int = None
-        if hasattr(args, 'checkpoint_interval'):
-            ci = args.checkpoint_interval
-            if ci not in (None, 0):
-                _ck_int = ci
-        sim_cfg = SimulationConfig(
-            nx=args.nx,
-            ny=args.ny,
-            Re=args.re,
-            lid_velocity=args.lid_velocity,
-            cfl_target=args.cfl,
-            cfl_growth=args.cfl_growth,
-            advection_scheme=args.scheme,
-            disable_advection=args.disable_advection,
-            lin_tol=args.lin_tol,
-            lin_maxiter=args.lin_maxiter,
-            diagnostics=args.diagnostics,
-            checkpoint_interval=_ck_int,
-            log_path=args.log_jsonl,
-            seed=args.seed,
-            turbulence_model=None,
-        )
-    except (ValidationError, ConfigError) as e:
-        print("Configuration invalid:\n" + str(e))
-        return 2
 
-    if args.command == 'validate':
-        out = sim_cfg.model_dump()
-        out['config_hash'] = sim_cfg.config_hash
-        print(json.dumps(out, indent=2, sort_keys=True))
-        return 0
-    if args.command == 'show-config':
-        print(json.dumps({'hash': sim_cfg.config_hash, 'brief': sim_cfg.brief()}, indent=2))
-        return 0
+    cfg = Config(
+        nx=args.nx,
+        ny=args.ny,
+        Re=args.re,
+        lid_velocity=args.lid_velocity,
+        cfl_target=args.cfl,
+        cfl_growth=args.cfl_growth,
+        advection_scheme=args.scheme,
+        disable_advection=args.disable_advection,
+        lin_tol=args.lin_tol,
+        lin_maxiter=args.lin_maxiter,
+        diagnostics=args.diagnostics,
+    )
+    # Runtime toggles (attached dynamically to keep dataclass stable)
+    setattr(cfg, 'enable_jacobi_pc', not args.no_preconditioner)
+    setattr(cfg, 'assert_invariants', args.assert_invariants)
+    if args.seed is not None:
+        setattr(cfg, 'seed', int(args.seed))
 
+    # Validate config early
+    validate_config(cfg)
     tracker = ResidualManager()
-    if args.command == 'run' and args.restart:
+    expected_hash = None
+    if args.restart:
         try:
             from .io.checkpoint import load_checkpoint
             state, meta = load_checkpoint(args.restart)
-            ck_hash = meta.get('structured_config_hash')
-            if ck_hash and ck_hash != sim_cfg.config_hash and not args.allow_hash_mismatch:
-                print(f"Refusing restart: checkpoint hash {ck_hash} != current {sim_cfg.config_hash} (use --allow-hash-mismatch to override)")
-                return 3
             start_it = int(meta.get('iteration', 0)) + 1
+            expected_hash = meta.get('config_hash')
         except Exception as e:
             print(f"Failed to load checkpoint {args.restart}: {e}")
-            state = allocate_state(sim_cfg.nx, sim_cfg.ny)
+            state = allocate_state(cfg.nx, cfg.ny)
             start_it = 0
     else:
-        state = allocate_state(sim_cfg.nx, sim_cfg.ny)
+        state = allocate_state(cfg.nx, cfg.ny)
         start_it = 0
-    driver = SimulationDriver(sim_cfg, state, tracker)
+    driver = SimulationDriver(cfg, state, tracker)
 
-    json_mode = getattr(args, 'json_stream', False)
+    # Restart hash enforcement
+    if expected_hash is not None:
+        live_hash = config_hash(cfg)
+        if live_hash != expected_hash:
+            print(f"ERROR: Configuration mismatch with checkpoint.\n  checkpoint hash: {expected_hash}\n  current    hash: {live_hash}")
+            # Provide a minimal diff hint: which semantic keys differ
+            # (exclude runtime fields)
+            diffs = []
+            for k, v in sorted(vars(cfg).items()):
+                if k in EXCLUDED_RUNTIME_FIELDS or k.startswith('_'):
+                    continue
+                # best effort: compare to meta? (meta doesn't carry full cfg) so only notify user
+            print("Aborting run. Adjust parameters or use matching checkpoint config.")
+            return 3
+
+    json_mode = args.json_stream
+    # Force quiet internal diagnostics when streaming JSON to guarantee clean machine output
     if json_mode:
-        sim_cfg.force_quiet = True
-    continuity_threshold = getattr(args, 'continuity_threshold', None)
-    max_steps = getattr(args, 'steps', 0)
+        setattr(cfg, 'force_quiet', True)
+    continuity_threshold = args.continuity_threshold
+    max_steps = args.steps
 
-    if sim_cfg.seed is not None:
+    if args.log_jsonl:
+        setattr(cfg, 'log_path', args.log_jsonl)
+    # Seed control
+    if getattr(cfg, 'seed', None) is not None:
         import numpy as _np
-        _np.random.seed(int(sim_cfg.seed))
+        _np.random.seed(int(getattr(cfg, 'seed')))
     last_diag = None; last_state = None; last_residuals = None
     try:
-        # Use sanitized interval (original 0 replaced with None)
-        runtime_ck_int = None if getattr(args, 'checkpoint_interval', None) in (None, 0) else args.checkpoint_interval
         for st, residuals, diag in driver.run(max_steps=max_steps,
-                                              start_iteration=start_it,
-                                              progress=(args.progress and not json_mode),
-                                              checkpoint_path=args.checkpoint,
-                                              checkpoint_interval=runtime_ck_int):
+                                             start_iteration=start_it,
+                                             progress=(args.progress and not json_mode),
+                                             checkpoint_path=args.checkpoint,
+                                             checkpoint_interval=args.checkpoint_interval):
             last_diag = diag; last_state = st; last_residuals = residuals
             if json_mode:
                 payload = {
@@ -166,9 +175,10 @@ def main(argv: list[str] | None = None) -> int:
                     },
                     "diagnostics": {k: v for k, v in diag.items() if k not in ("iteration", "dt", "CFL", "wall_time")},
                 }
-                if sim_cfg.seed is not None:
+                if getattr(cfg, 'seed', None) is not None:
                     payload.setdefault('run_meta', {})
-                    payload['run_meta']['seed'] = sim_cfg.seed
+                    # Access via getattr to appease static type checkers (seed injected dynamically)
+                    payload['run_meta']['seed'] = getattr(cfg, 'seed')
                 sys.stdout.write(json.dumps(payload, separators=(",", ":")) + "\n")
                 sys.stdout.flush()
             # Early stop condition
@@ -180,11 +190,11 @@ def main(argv: list[str] | None = None) -> int:
         # Graceful shutdown: attempt final checkpoint
         if not json_mode:
             print("KeyboardInterrupt received – attempting graceful checkpoint...")
-        ck_path = getattr(args, 'checkpoint', None) or "interrupt_final_checkpoint.npz"
+        ck_path = args.checkpoint or "interrupt_final_checkpoint.npz"
         if last_state is not None and last_diag is not None:
             try:
                 from .io.checkpoint import save_checkpoint
-                save_checkpoint(ck_path, last_state, last_diag.get('iteration', 0), last_diag.get('wall_time', 0.0), sim_cfg)
+                save_checkpoint(ck_path, last_state, last_diag.get('iteration', 0), last_diag.get('wall_time', 0.0), cfg)
                 if not json_mode:
                     print(f"Final checkpoint written: {ck_path}")
             except Exception as e:  # pragma: no cover

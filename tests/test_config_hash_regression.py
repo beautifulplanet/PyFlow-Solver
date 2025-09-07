@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from copy import deepcopy
 
 from pyflow.config.model import config_hash, EXCLUDED_RUNTIME_FIELDS, config_core_dict
+from pyflow.config.model import SimulationConfig
 
 @dataclass
 class DummyCfg:
@@ -43,3 +44,13 @@ def test_core_dict_excludes_runtime_fields():
     core = config_core_dict(base)
     for f in EXCLUDED_RUNTIME_FIELDS:
         assert f not in core, f"Excluded field '{f}' leaked into core dict"
+
+
+def test_all_simulation_config_fields_accounted():
+    cfg = SimulationConfig(nx=8, ny=8)
+    attrs = {k for k in vars(cfg).keys() if not k.startswith('_')}
+    core = set(config_core_dict(cfg).keys())
+    excluded = EXCLUDED_RUNTIME_FIELDS
+    # Every attr must be either in core (semantic) or excluded runtime list
+    for a in attrs:
+        assert (a in core) or (a in excluded), f"Config field '{a}' is neither hashed nor excluded"
