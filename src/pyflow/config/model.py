@@ -1,101 +1,87 @@
+"""Configuration model & deterministic hashing utilities.
+
+This module centralizes the logic for producing a *stable* configuration hash
+used in checkpoints and restart compatibility enforcement. Only *semantic*
+simulation parameters must influence the hash. Ephemeral/runtime fields that
+can legitimately vary between runs (logging destinations, quiet flags, seeds,
+progress toggles, injected callbacks, etc.) are **excluded** so they do not
+invalidate reproducibility or restart matching.
+
+Contract (v1):
+  * Included: numeric / string scalar parameters that change numerical
+	behavior or discretization (nx, ny, Re, lid_velocity, CFL targets, solver
+	tolerances, scheme identifiers, geometry extents, boolean feature toggles
+	that alter math such as disable_advection).
+  * Excluded: force_quiet, log_path, enable_jacobi_pc, assert_invariants,
+	seed, progress, any attribute whose name starts with an underscore, and
+	any attribute whose value is callable or a module/type object.
+  * Ordering: keys sorted lexicographically before hashing.
+  * Serialization: JSON with separators (',',':') for canonical form.
+
+Adding a new config attribute that affects solver mathematics MUST update the
+regression test in tests/test_config_hash_regression.py if it should be
+included (i.e. remove it from EXCLUDED_RUNTIME_FIELDS if present). Runtime
+only additions should be added to EXCLUDED_RUNTIME_FIELDS.
+"""
+
 from __future__ import annotations
 
-import hashlib
-import json
-from typing import Any, Literal
+from dataclasses import is_dataclass, asdict
+from typing import Any, Dict, Iterable
+import json, hashlib, inspect
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+# Central list of runtime / non-semantic fields intentionally excluded.
+EXCLUDED_RUNTIME_FIELDS: set[str] = {
+	"force_quiet",
+	"log_path",
+	"enable_jacobi_pc",
+	"assert_invariants",
+	"seed",  # seeding reproducibility handled separately; not part of math config
+	"progress",  # CLI presentation concern
+}
 
+def _is_hashable_value(v: Any) -> bool:
+	"""Return True if value is acceptable for inclusion (not a function/module/type)."""
+	if callable(v):
+		return False
+	if inspect.ismodule(v) or inspect.isclass(v):  # pragma: no cover (defensive)
+		return False
+	return True
 
-class ConfigError(ValueError):
-    pass
+def config_core_dict(cfg: Any) -> Dict[str, Any]:
+	"""Extract a dict of semantic configuration fields from an arbitrary object.
 
-AdvectionScheme = Literal['upwind','quick']
+	Supports dataclasses or simple attribute containers. Filters excluded names
+	and non-hashable runtime objects.
+	"""
+	if is_dataclass(cfg) and not isinstance(cfg, type):
+		# asdict only on instance, not class objects
+		raw = asdict(cfg)
+	elif hasattr(cfg, "__dict__"):
+		raw = {k: v for k, v in vars(cfg).items() if not k.startswith("_")}
+	else:  # fallback to dir() inspection
+		raw = {k: getattr(cfg, k) for k in dir(cfg) if not k.startswith("_")}
+	core: Dict[str, Any] = {}
+	for k, v in raw.items():
+		if k in EXCLUDED_RUNTIME_FIELDS:
+			continue
+		if not _is_hashable_value(v):
+			continue
+		core[k] = v
+	return core
 
-class SimulationConfig(BaseModel):
-    # Core grid / physics
-    nx: int = Field(..., ge=3, description="Number of interior u-cells in x (including boundary indices)")
-    ny: int = Field(..., ge=3, description="Number of interior v-cells in y")
-    Re: float = Field(100.0, gt=0.0, description="Reynolds number (non-dimensional)")
-    lid_velocity: float = Field(1.0, description="Top lid tangential velocity")
+def config_hash(cfg: Any) -> str:
+	"""Compute deterministic short hash of semantic config fields.
 
-    # Time stepping / CFL control
-    cfl_target: float = Field(0.5, gt=0.0, le=1.0)
-    cfl_growth: float = Field(1.05, gt=1.0, le=1.2)
+	Returns first 10 hex chars of SHA1 of canonical JSON encoding.
+	"""
+	core = config_core_dict(cfg)
+	blob = json.dumps(core, sort_keys=True, separators=(",", ":"), default=str).encode()
+	return hashlib.sha1(blob).hexdigest()[:10]
 
-    # Linear solver
-    lin_tol: float = Field(1e-10, ge=1e-14, le=1e-2)
-    lin_maxiter: int = Field(200, ge=1, le=10000)
+__all__ = [
+	"config_hash",
+	"config_core_dict",
+	"EXCLUDED_RUNTIME_FIELDS",
+]
 
-    # Advection
-    advection_scheme: AdvectionScheme = 'upwind'
-    disable_advection: bool = False
-
-    # Diagnostics / logging
-    diagnostics: bool = True
-    log_path: str | None = None
-    log_stream: Any | None = None  # for in-memory tests; not hashed
-    # Ephemeral runtime suppression flag (set by CLI when --json-stream is used);
-    # excluded from hashing so enabling JSON streaming doesn't alter restart safety hash.
-    force_quiet: bool = False
-
-    # Checkpointing
-    checkpoint_interval: int | None = Field(None, ge=1)
-    emergency_checkpoint_path: str | None = None
-
-    # Reproducibility
-    seed: int | None = Field(None, ge=0, le=2**32 - 1)
-
-    # Versioning
-    schema_version: int = 1
-
-    # Reserved future fields (placeholders)
-    turbulence_model: str | None = Field(None, description="Future turbulence closure identifier")
-
-    @field_validator('advection_scheme')
-    @classmethod
-    def _check_scheme(cls, v, info):
-        return v
-
-    @model_validator(mode='after')
-    def _cross_field(self):
-        issues: list[str] = []
-        if self.disable_advection and self.advection_scheme not in ('upwind','quick'):
-            issues.append("disable_advection set but advection_scheme invalid")
-        if self.log_path and self.log_stream is not None:
-            issues.append("log_path and log_stream are mutually exclusive")
-        ar = max(self.nx,1)/max(self.ny,1)
-        if ar > 10 or ar < 0.1:
-            # aspect ratio extreme, soft warning stored
-            object.__setattr__(self, '_soft_warning', f"Extreme aspect ratio nx/ny={ar:.2f}")
-        if issues:
-            raise ConfigError("; ".join(issues))
-        return self
-
-    def hash_payload(self) -> dict:
-        # Exclude ephemeral / runtime only fields
-        data = self.model_dump()
-        for k in ('log_stream','force_quiet'):
-            data.pop(k, None)
-        return data
-
-    @property
-    def config_hash(self) -> str:
-        payload = self.hash_payload()
-        blob = json.dumps(payload, sort_keys=True, separators=(',',':')).encode()
-        return hashlib.sha1(blob).hexdigest()[:12]
-
-    def brief(self) -> dict:
-        return {
-            'nx': self.nx,
-            'ny': self.ny,
-            'Re': self.Re,
-            'scheme': (None if self.disable_advection else self.advection_scheme),
-            'lin_tol': self.lin_tol,
-            'lin_maxiter': self.lin_maxiter,
-            'cfl_target': self.cfl_target,
-            'cfl_growth': self.cfl_growth,
-            'hash': self.config_hash
-        }
-
-__all__ = ["ConfigError", "SimulationConfig"]
