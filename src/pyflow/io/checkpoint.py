@@ -14,12 +14,12 @@ Design Goals:
   * Backwards compatible  absence of file or fields handled gracefully
 """
 from dataclasses import asdict
-import json, os, tempfile, hashlib, io
+import json, os, tempfile, hashlib, io, subprocess
 from typing import Any, Dict, cast
 import numpy as np
 
 from ..core.ghost_fields import State
-from ..config.model import config_hash
+from ..config.model import config_hash, HASH_LEN
 
 
 def _hash_config(cfg: Any) -> str:  # backwards alias; delegated to config_hash
@@ -43,6 +43,11 @@ def save_checkpoint(path: str, state: State, iteration: int, sim_time: float, cf
     """
     os.makedirs(os.path.dirname(path) or '.', exist_ok=True)
     field_hashes = {k: _hash_array(v) for k, v in state.fields.items()}
+    git_rev = None
+    try:  # best effort; ignore errors (e.g., not a git repo)
+        git_rev = subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL, text=True).strip()
+    except Exception:  # pragma: no cover
+        pass
     meta: Dict[str, Any] = {
         'iteration': iteration,
         'time': sim_time,
@@ -51,7 +56,9 @@ def save_checkpoint(path: str, state: State, iteration: int, sim_time: float, cf
         'config_hash': _hash_config(cfg),
         'field_hashes': field_hashes,
         'seed': getattr(cfg, 'seed', None),
-        'schema_version': 1,
+        'schema_version': 2,
+    'hash_len': HASH_LEN,
+    'git_commit': git_rev,
     }
     tmp_fd, tmp_path = tempfile.mkstemp(suffix='.tmp', dir=os.path.dirname(path) or '.')
     try:

@@ -7,7 +7,7 @@ can legitimately vary between runs (logging destinations, quiet flags, seeds,
 progress toggles, injected callbacks, etc.) are **excluded** so they do not
 invalidate reproducibility or restart matching.
 
-Contract (v1):
+Contract (v1.1):
   * Included: numeric / string scalar parameters that change numerical
 	behavior or discretization (nx, ny, Re, lid_velocity, CFL targets, solver
 	tolerances, scheme identifiers, geometry extents, boolean feature toggles
@@ -26,7 +26,7 @@ only additions should be added to EXCLUDED_RUNTIME_FIELDS.
 
 from __future__ import annotations
 
-from dataclasses import is_dataclass, asdict
+from dataclasses import is_dataclass, asdict, dataclass
 from typing import Any, Dict, Iterable
 import json, hashlib, inspect
 
@@ -70,18 +70,71 @@ def config_core_dict(cfg: Any) -> Dict[str, Any]:
 		core[k] = v
 	return core
 
+HASH_LEN = 16
+
 def config_hash(cfg: Any) -> str:
 	"""Compute deterministic short hash of semantic config fields.
 
-	Returns first 10 hex chars of SHA1 of canonical JSON encoding.
+	Returns first 16 hex chars of SHA1 of canonical JSON encoding.
 	"""
 	core = config_core_dict(cfg)
 	blob = json.dumps(core, sort_keys=True, separators=(",", ":"), default=str).encode()
-	return hashlib.sha1(blob).hexdigest()[:10]
+	return hashlib.sha1(blob).hexdigest()[:HASH_LEN]
 
-__all__ = [
-	"config_hash",
-	"config_core_dict",
-	"EXCLUDED_RUNTIME_FIELDS",
-]
+def freeze_config(cfg: Any) -> Any:
+	"""Freeze semantic fields to prevent mutation after hashing.
+
+	Semantic (hashed) fields become read-only; excluded runtime fields remain
+	mutable. Idempotent.
+	"""
+	if getattr(cfg, '_config_frozen', False):
+		return cfg
+	semantic = set(config_core_dict(cfg).keys())
+	original_cls = cfg.__class__
+	original_setattr = original_cls.__setattr__
+	def locked_setattr(self, name, value):  # type: ignore
+		if getattr(self, '_config_frozen', False) and name in getattr(self, '_frozen_semantic_fields', set()):
+			raise AttributeError(f"Config is frozen; cannot modify semantic field '{name}'")
+		return original_setattr(self, name, value)
+	FrozenCls = type(f"{original_cls.__name__}Frozen", (original_cls,), {"__setattr__": locked_setattr})
+	cfg.__class__ = FrozenCls  # type: ignore
+	setattr(cfg, '_frozen_semantic_fields', frozenset(semantic))
+	setattr(cfg, '_config_frozen', True)
+	return cfg
+
+class ConfigError(ValueError):
+	"""Configuration validation / compatibility error."""
+
+
+@dataclass
+class SimulationConfig:
+	"""Backward-compatible configuration container.
+
+	Mirrors fields used by the CLI `Config` dataclass so that legacy tests
+	importing SimulationConfig continue to function. For new code paths the
+	CLI may still supply a bespoke dataclass; hashing only relies on public
+	attributes so interchangeability is preserved.
+	"""
+	nx: int
+	ny: int
+	Re: float = 100.0
+	lid_velocity: float = 1.0
+	cfl_target: float = 0.5
+	cfl_growth: float = 1.05
+	advection_scheme: str = "quick"
+	disable_advection: bool = False
+	lin_tol: float = 1e-10
+	lin_maxiter: int = 300
+	diagnostics: bool = False
+	lx: float | None = None
+	ly: float | None = None
+
+	def __post_init__(self):  # minimal geometry fallback
+		if self.lx is None:
+			self.lx = float(self.nx - 1)
+		if self.ly is None:
+			self.ly = float(self.ny - 1)
+
+
+__all__ = ["config_hash", "config_core_dict", "EXCLUDED_RUNTIME_FIELDS", "SimulationConfig", "ConfigError", "freeze_config", "HASH_LEN"]
 

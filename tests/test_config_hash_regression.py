@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from copy import deepcopy
 
-from pyflow.config.model import config_hash, EXCLUDED_RUNTIME_FIELDS, config_core_dict
+from pyflow.config.model import config_hash, EXCLUDED_RUNTIME_FIELDS, config_core_dict, HASH_LEN, freeze_config
 from pyflow.config.model import SimulationConfig
 
 @dataclass
@@ -22,6 +22,7 @@ class DummyCfg:
 def test_config_hash_stable_under_runtime_field_mutation():
     base = DummyCfg()
     h0 = config_hash(base)
+    assert len(h0) == HASH_LEN
     # Mutate every excluded runtime field (inject if not present)
     for f in sorted(EXCLUDED_RUNTIME_FIELDS):
         mutated = deepcopy(base)

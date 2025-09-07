@@ -29,7 +29,7 @@ from .drivers.simulation_driver import SimulationDriver
 from .core.ghost_fields import allocate_state
 from .residuals.manager import ResidualManager
 from .config.validation import validate_config
-from .config.model import config_hash, EXCLUDED_RUNTIME_FIELDS
+from .config.model import config_hash, EXCLUDED_RUNTIME_FIELDS, freeze_config
 
 @dataclass
 class Config:
@@ -106,6 +106,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # Validate config early
     validate_config(cfg)
+    freeze_config(cfg)
     tracker = ResidualManager()
     expected_hash = None
     if args.restart:
