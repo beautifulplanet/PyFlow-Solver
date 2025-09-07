@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Natural language parsing for simulation requests.
 
 A lightweight rule/heuristic driven parser (no external LLM call) that
@@ -8,7 +9,7 @@ Future extension: replace internals with actual LLM invocation while keeping
 stable function contract.
 """
 import re
-from typing import Optional
+
 from .schema import SimulationRequest
 
 # Regex helpers
@@ -28,7 +29,7 @@ PROBLEM_KEYWORDS = {
     'cavity': 'lid_cavity',
 }
 
-def parse_natural_language(text: str, *, default: Optional[SimulationRequest] = None) -> SimulationRequest:
+def parse_natural_language(text: str, *, default: SimulationRequest | None = None) -> SimulationRequest:
     req = SimulationRequest() if default is None else default
     t = text.strip()
     low = t.lower()

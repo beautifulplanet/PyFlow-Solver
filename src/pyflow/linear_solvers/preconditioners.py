@@ -4,6 +4,7 @@ import numpy as np
 import scipy.sparse as sp
 import scipy.sparse.linalg as spla
 
+
 def jacobi_preconditioner(A: sp.spmatrix):
     """
     Create a Jacobi (diagonal) preconditioner as a LinearOperator for use with iterative solvers.

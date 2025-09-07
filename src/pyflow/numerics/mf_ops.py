@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Matrix-free numerical operators for PyFlow.
 
 Phase 2 (Isolated R&D) deliverable:
@@ -21,9 +22,11 @@ Notes:
 - Intended for unit tests and later controlled integration.
 """
 from dataclasses import dataclass
+
 import numpy as np
 import scipy.sparse as sp
-from .fluid_ops import gradient, divergence
+
+from .fluid_ops import divergence, gradient
 
 Array2D = np.ndarray
 
@@ -194,11 +197,11 @@ def build_5point_laplacian_matrix(nx: int, ny: int, dx: float, dy: float) -> sp.
 
 
 __all__ = [
-    'laplacian_matrix_free',
+    'OperatorComparisonResult',
+    'build_5point_laplacian_matrix',
     'build_laplacian_matrix_from_ops',
     'compare_operator_with_matrix',
+    'laplacian_matrix_free',
     'laplacian_matrix_free_5point',
-    'build_5point_laplacian_matrix',
-    'laplacian_matrix_free_5point_neumann',
-    'OperatorComparisonResult'
+    'laplacian_matrix_free_5point_neumann'
 ]

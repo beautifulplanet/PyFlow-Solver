@@ -31,3 +31,4 @@ def test_jacobi_preconditioner_reduces_iterations_preserves_solution():
         assert it_pc <= it_nopc
     # Sanity: solutions not all zeros (divergence was non-zero)
     assert np.linalg.norm(p_pc) > 0
+

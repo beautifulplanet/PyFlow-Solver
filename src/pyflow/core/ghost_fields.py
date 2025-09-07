@@ -1,6 +1,9 @@
-import numpy as np
+from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Dict, Tuple, Any, Mapping
+from typing import Any
+
+import numpy as np
+
 
 @dataclass
 class State:
@@ -11,8 +14,8 @@ class State:
     """
     nx: int
     ny: int
-    fields: Dict[str, np.ndarray]
-    meta: Dict[str, Any] = field(default_factory=dict)
+    fields: dict[str, np.ndarray]
+    meta: dict[str, Any] = field(default_factory=dict)
 
     def arr(self, name: str) -> np.ndarray:
         return self.fields[name]
@@ -41,7 +44,7 @@ class State:
     def values(self):
         return self.fields.values()
 
-def allocate_state(nx: int, ny: int, fields: Tuple[str, ...] = ("u", "v", "p")) -> State:
+def allocate_state(nx: int, ny: int, fields: tuple[str, ...] = ("u", "v", "p")) -> State:
     """Allocate a State with named fields including ghost cells.
 
     Parameters
@@ -56,7 +59,7 @@ def allocate_state(nx: int, ny: int, fields: Tuple[str, ...] = ("u", "v", "p")) 
 def interior_view(arr: np.ndarray) -> np.ndarray:
     return arr[1:-1, 1:-1]
 
-def ghost_shapes(state: Mapping[str, np.ndarray] | State) -> Dict[str, Tuple[int, int]]:
+def ghost_shapes(state: Mapping[str, np.ndarray] | State) -> dict[str, tuple[int, int]]:
     if isinstance(state, State):
         items = state.fields.items()
     else:

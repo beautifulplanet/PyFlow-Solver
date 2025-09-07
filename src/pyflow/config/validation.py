@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Configuration validation utilities.
 
 Avoids external dependency bloat; provides a validate_config function that
@@ -6,6 +7,7 @@ raises ValueError on invalid user-supplied parameters.
 """
 from dataclasses import dataclass
 from typing import Any
+
 
 @dataclass(slots=True)
 class ValidatedConfig:

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Live Dashboard (Phase 3 preview)
 
 Plotly Dash application that launches the PyFlow CLI in a subprocess with
@@ -21,31 +22,30 @@ The caller must install these before launching dashboard.
 """
 import argparse
 import json
-import threading
 import queue
 import subprocess
 import sys
-import time
+import threading
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional
+from typing import Any
 
 MAX_POINTS = 10_000  # cap history
 
 @dataclass
 class StreamState:
-    iterations: List[int] = field(default_factory=list)
-    continuity: List[float] = field(default_factory=list)
-    ru: List[float] = field(default_factory=list)
-    rv: List[float] = field(default_factory=list)
-    rp: List[float] = field(default_factory=list)
-    dt: List[float] = field(default_factory=list)
-    cfl: List[float] = field(default_factory=list)
-    wall_time: List[float] = field(default_factory=list)
-    velocity_profile_y: List[float] = field(default_factory=list)  # y coordinates
-    velocity_profile_u: List[float] = field(default_factory=list)  # u at centerline
-    last_raw: Dict[str, Any] = field(default_factory=dict)
+    iterations: list[int] = field(default_factory=list)
+    continuity: list[float] = field(default_factory=list)
+    ru: list[float] = field(default_factory=list)
+    rv: list[float] = field(default_factory=list)
+    rp: list[float] = field(default_factory=list)
+    dt: list[float] = field(default_factory=list)
+    cfl: list[float] = field(default_factory=list)
+    wall_time: list[float] = field(default_factory=list)
+    velocity_profile_y: list[float] = field(default_factory=list)  # y coordinates
+    velocity_profile_u: list[float] = field(default_factory=list)  # u at centerline
+    last_raw: dict[str, Any] = field(default_factory=dict)
 
-    def append(self, obj: Dict[str, Any]):
+    def append(self, obj: dict[str, Any]):
         it = int(obj.get('iteration', len(self.iterations)))
         res = obj.get('residuals', {})
         diag = obj.get('diagnostics', {})
@@ -68,7 +68,7 @@ class StreamState:
         self.last_raw = obj
 
 
-def launch_cli_stream(args: List[str], line_queue: queue.Queue[str]):
+def launch_cli_stream(args: list[str], line_queue: queue.Queue[str]):
     """Launch CLI subprocess and push each JSON line into the queue."""
     proc = subprocess.Popen([sys.executable, '-m', 'pyflow.cli', *args, '--json-stream'],
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
@@ -91,11 +91,11 @@ def launch_cli_stream(args: List[str], line_queue: queue.Queue[str]):
     return proc
 
 
-def build_dash_app(state: StreamState, cli_args: List[str], proc):
+def build_dash_app(state: StreamState, cli_args: list[str], proc):
     try:
-        from dash import Dash, dcc, html
         import plotly.graph_objs as go
-    except ImportError as e:  # pragma: no cover - requires optional deps
+        from dash import Dash, dcc, html
+    except ImportError:  # pragma: no cover - requires optional deps
         print("Dash/Plotly not installed. Install with: pip install dash plotly")
         raise SystemExit(1)
 
@@ -133,7 +133,8 @@ def build_dash_app(state: StreamState, cli_args: List[str], proc):
         dcc.Interval(id='tick', interval=1000, n_intervals=0),
     ], style={'fontFamily': 'Arial, sans-serif'})
 
-    from dash import Output, Input, State as DashState, no_update
+    from dash import Input, Output
+    from dash import State as DashState
 
     @app.callback(
         Output('control-state', 'data'),
@@ -241,7 +242,7 @@ def build_dash_app(state: StreamState, cli_args: List[str], proc):
     return app
 
 
-def run(argv: Optional[List[str]] = None):  # pragma: no cover - integration function
+def run(argv: list[str] | None = None):  # pragma: no cover - integration function
     parser = argparse.ArgumentParser(description='PyFlow Live Dashboard')
     parser.add_argument('--nx', type=int, default=64)
     parser.add_argument('--ny', type=int, default=64)

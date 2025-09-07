@@ -1,11 +1,12 @@
 from __future__ import annotations
+
 """Schema definitions for AI control layer.
 
 Defines a structured representation of a simulation request that can be
 populated from natural language and then mapped to CLI arguments.
 """
 from dataclasses import dataclass, field
-from typing import Optional, Dict, Any
+from typing import Any
 
 SUPPORTED_PROBLEMS = {"lid_cavity": "Lid-driven cavity flow"}
 
@@ -22,8 +23,8 @@ class SimulationRequest:
     cfl_growth: float = 1.05
     diagnostics: bool = False
     json_stream: bool = True
-    continuity_threshold: Optional[float] = None
-    extra: Dict[str, Any] = field(default_factory=dict)
+    continuity_threshold: float | None = None
+    extra: dict[str, Any] = field(default_factory=dict)
 
     def to_cli_args(self) -> list[str]:
         args = [
@@ -45,4 +46,4 @@ class SimulationRequest:
                 args.append(f"--{k}={v}")
         return args
 
-__all__ = ["SimulationRequest", "SUPPORTED_PROBLEMS"]
+__all__ = ["SUPPORTED_PROBLEMS", "SimulationRequest"]

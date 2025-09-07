@@ -1,13 +1,14 @@
 from __future__ import annotations
+
 """Reusable simulation driver for PyFlow.
 
 Design Goals:
-  * Provide a thin orchestration layer that repeatedly calls the low‑level
-    step() function while exposing a generator interface for incremental
+    * Provide a thin orchestration layer that repeatedly calls the low-level
+        step() function while exposing a generator interface for incremental
     consumption (CLI, dashboard, AI control layer).
-  * Keep zero policy about termination – caller decides when to stop based on
+    * Keep zero policy about termination - caller decides when to stop based on
     yielded diagnostics (iterations, wall time, residuals, etc.).
-  * Remain side‑effect free beyond mutating the provided State instance.
+    * Remain side-effect free beyond mutating the provided State instance.
 
 Usage:
     driver = SimulationDriver(cfg, state, tracker)
@@ -24,19 +25,21 @@ Future Extensions (non-breaking):
   * Snapshot / checkpoint writer
   * Adaptive stopping policies packaged as utilities
 """
-from typing import Generator, Iterable, Optional, Any, Dict, Callable
 import time
+from collections.abc import Callable, Generator
+from typing import Any
 
 from ..core.ghost_fields import State, allocate_state, interior_view
+from ..io.checkpoint import save_checkpoint
 from ..residuals.manager import ResidualManager
 from ..solvers.solver import step
-from ..io.checkpoint import save_checkpoint
+
 
 class SimulationDriver:
     def __init__(self,
                  config: Any,
-                 state: Optional[State] = None,
-                 tracker: Optional[ResidualManager] = None,
+                 state: State | None = None,
+                 tracker: ResidualManager | None = None,
                  *,
                  allocate: Callable[[int, int], State] = allocate_state):
         self.config = config
@@ -53,12 +56,12 @@ class SimulationDriver:
         return self.state
 
     def run(self,
-            max_steps: Optional[int] = None,
+            max_steps: int | None = None,
             *,
             start_iteration: int = 0,
             progress: bool = False,
             checkpoint_path: str | None = None,
-            checkpoint_interval: int | None = None) -> Generator[tuple[State, Dict[str, float], Dict[str, Any]], None, None]:
+            checkpoint_interval: int | None = None) -> Generator[tuple[State, dict[str, float], dict[str, Any]], None, None]:
         """Run the simulation, yielding after every solver step.
 
         Parameters

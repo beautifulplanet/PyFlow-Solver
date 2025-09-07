@@ -14,13 +14,24 @@ High‑clarity, educational incompressible CFD projection solver featuring a reu
 * Generator pattern (`SimulationDriver.run`) yields `(state, residuals, diagnostics)` per step
 * Centerline velocity profile extraction for visualization
 
-### CLI (`pyflow.cli`)
-* Arguments: grid size, Reynolds number, lid velocity, steps, advection scheme, linear solver tolerances
-* `--json-stream` emits one compact JSON line per step (stable schema)
-* Early stop via continuity threshold
-* Checkpointing: `--checkpoint`, `--checkpoint-interval`, restart via `--restart`
-* Structured logging: `--log-jsonl`
-* Preconditioner control: `--no-preconditioner`
+### CLI (`pyflow cli`)
+Subcommand architecture (Phase 2):
+* `pyflow run` – run a simulation.
+* `pyflow validate` – print normalized config + `config_hash`.
+* `pyflow show-config` – brief summary + hash.
+Core arguments: grid size, Reynolds number, lid velocity, advection scheme, linear solver tolerances, checkpoint / restart controls.
+Key flags:
+* `--json-stream` emits compact JSON lines (stable schema)
+* `--checkpoint`, `--checkpoint-interval N` (0 disables), `--restart CK.npz`
+* `--allow-hash-mismatch` (override restart safety)
+* `--log-jsonl PATH` structured per-step logging
+* `--progress` simple progress bar (suppressed in json stream)
+* `--continuity-threshold X` early stop
+Config hash enforcement:
+* Each checkpoint stores `structured_config_hash`.
+* On restart mismatch: exit code 3 + refusal message.
+* Override only when intentional using `--allow-hash-mismatch`.
+See `CONFIGURATION.md` for full field definitions and hashing details.
 
 ### Live Dashboard (`pyflow.dashboard.live_dashboard`)
 * Consumes CLI JSON stream via subprocess
@@ -52,14 +63,19 @@ Run the end‑to‑end demo (short cavity simulation with dashboard + logging + 
 python demo.py
 ```
 
-Headless CLI example (JSON streaming 50 steps on 64x64 grid):
+Headless run (JSON streaming 50 steps on 64x64 grid):
 ```
-python -m pyflow.cli --nx 64 --ny 64 --steps 50 --json-stream --checkpoint ck.npz --checkpoint-interval 25
+pyflow run --nx 64 --ny 64 --steps 50 --json-stream --checkpoint ck.npz --checkpoint-interval 25
 ```
 
-Resume from checkpoint and continue for 20 more steps:
+Resume from checkpoint for 20 more steps:
 ```
-python -m pyflow.cli --nx 64 --ny 64 --steps 20 --restart ck.npz --json-stream
+pyflow run --nx 64 --ny 64 --steps 20 --restart ck.npz --json-stream
+```
+
+Validate configuration & show hash:
+```
+pyflow validate --nx 32 --ny 32 --re 250
 ```
 
 Launch live dashboard (optional `dash`, `plotly` installed):

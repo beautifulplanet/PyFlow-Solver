@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-import numpy as np
-from typing import Literal
 from dataclasses import dataclass
+from typing import Literal
+
+import numpy as np
+
 
 @dataclass(slots=True)
 class LinearSolveResult:
