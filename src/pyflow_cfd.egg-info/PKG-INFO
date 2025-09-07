@@ -1,0 +1,125 @@
+Metadata-Version: 2.4
+Name: pyflow-cfd
+Version: 0.1.0
+Summary: Educational CFD projection solver with CLI, dashboard, AI control, and robustness roadmap
+Author: PyFlow Team
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Intended Audience :: Science/Research
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: numpy==1.26.4
+Requires-Dist: scipy==1.13.1
+Provides-Extra: dash
+Requires-Dist: dash==2.17.1; extra == "dash"
+Requires-Dist: plotly==5.23.0; extra == "dash"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4; extra == "dev"
+Requires-Dist: ruff>=0.6.4; extra == "dev"
+Requires-Dist: mypy>=1.10; extra == "dev"
+Requires-Dist: types-setuptools; extra == "dev"
+Requires-Dist: numpy==1.26.4; extra == "dev"
+Requires-Dist: scipy==1.13.1; extra == "dev"
+
+# PyFlow CFD – v1.0.0
+
+High‑clarity, educational incompressible CFD projection solver featuring a reusable simulation driver, structured CLI with JSON streaming, live Plotly dashboard, natural‑language AI control layer, robustness (checkpoint/restart, NaN emergency snapshot, structured logging), and a preconditioned pressure solve. Designed as a portfolio‑grade demonstrator: easy to run, inspect, and extend.
+
+## Features
+
+### Core Solver
+* 2D lid‑driven cavity (uniform Cartesian grid) using projection method
+* Coherent gradient/divergence pair ⇒ analytically consistent Laplacian
+* Matrix‑free Conjugate Gradient pressure solve with optional Jacobi preconditioner
+* Adaptive dt safeguard (divergence trend based) & CFL target ramp
+
+### Simulation Driver
+* Generator pattern (`SimulationDriver.run`) yields `(state, residuals, diagnostics)` per step
+* Centerline velocity profile extraction for visualization
+
+### CLI (`pyflow.cli`)
+* Arguments: grid size, Reynolds number, lid velocity, steps, advection scheme, linear solver tolerances
+* `--json-stream` emits one compact JSON line per step (stable schema)
+* Early stop via continuity threshold
+* Checkpointing: `--checkpoint`, `--checkpoint-interval`, restart via `--restart`
+* Structured logging: `--log-jsonl`
+* Preconditioner control: `--no-preconditioner`
+
+### Live Dashboard (`pyflow.dashboard.live_dashboard`)
+* Consumes CLI JSON stream via subprocess
+* Real‑time residuals, continuity, dt, CFL, centerline velocity profile
+* Pause / resume / stop controls, log vs linear scaling, adjustable update interval
+
+### AI Control Layer
+* Natural language → structured config parser (e.g. “run 200 steps at Re 500 on a 96x64 grid”)
+* Launches CLI as a subprocess; streams results programmatically
+
+### Robustness & Forensics
+* Periodic checkpoint & restart (bit‑for‑bit verified by tests)
+* Emergency checkpoint on NaN/Inf detection (`*_FAIL_NAN.npz`)
+* Structured JSONL logging (per‑step + error events)
+* Test coverage for preconditioner correctness, restart integrity, NaN detection
+
+### Benchmark Harness (Frozen for v1.0 Demo)
+* Included but de‑prioritized: `pyflow.benchmark.harness` (baseline measurement tool)
+
+## Quickstart (One Command Demo)
+
+Install (editable):
+```
+pip install -e .[dash,dev]
+```
+
+Run the end‑to‑end demo (short cavity simulation with dashboard + logging + checkpoint):
+```
+python demo.py
+```
+
+Headless CLI example (JSON streaming 50 steps on 64x64 grid):
+```
+python -m pyflow.cli --nx 64 --ny 64 --steps 50 --json-stream --checkpoint ck.npz --checkpoint-interval 25
+```
+
+Resume from checkpoint and continue for 20 more steps:
+```
+python -m pyflow.cli --nx 64 --ny 64 --steps 20 --restart ck.npz --json-stream
+```
+
+Launch live dashboard (optional `dash`, `plotly` installed):
+```
+python -m pyflow.dashboard.live_dashboard --nx 64 --ny 64 --steps 200
+```
+
+AI natural language control is accessible via the internal parser module (programmatic usage pattern; not exposed as standalone CLI for v1.0).
+
+## Demo Script (What It Does)
+`demo.py` performs a short run with:
+* Medium grid (64×64)
+* JSON logging & structured log file
+* Automatic checkpointing
+* Prints summary lines and exit residual
+
+## JSON Stream Schema (Stable v1)
+Each line: `{"type":"step", "iteration": int, "dt": float, "CFL": float, "continuity": float, "wall_time": float, "residuals": {...}, "diagnostics": {...}}`
+
+Key residuals: `Ru, Rv, Rp, continuity`. Diagnostics include solver iterations (`Rp_iterations`), linear residual norm, divergence norms, centerline velocity profile, checkpoint flags.
+
+## Development & Tests
+Run tests:
+```
+pytest -q
+```
+
+## Roadmap (v2.0 Backlog – Not in v1.0)
+* Performance profiling & scaling benchmarks integration
+* Advanced preconditioners (ILU, multigrid), JIT (Numba) acceleration
+* Non‑uniform / generalized mesh abstraction completion
+* Extended AI interface (adaptive control policies)
+
+## License
+MIT
+
+## Attribution / Purpose
+Portfolio‑ready educational CFD codebase emphasizing clarity, observability, and reliability over premature optimization in v1.0.
+
