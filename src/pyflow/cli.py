@@ -29,7 +29,7 @@ from .drivers.simulation_driver import SimulationDriver
 from .core.ghost_fields import allocate_state
 from .residuals.manager import ResidualManager
 from .config.validation import validate_config
-from .config.model import config_hash, EXCLUDED_RUNTIME_FIELDS, freeze_config
+from .config.model import config_hash, EXCLUDED_RUNTIME_FIELDS, freeze_config, config_core_dict
 
 @dataclass
 class Config:
@@ -109,12 +109,14 @@ def main(argv: list[str] | None = None) -> int:
     freeze_config(cfg)
     tracker = ResidualManager()
     expected_hash = None
+    expected_core = None
     if args.restart:
         try:
             from .io.checkpoint import load_checkpoint
             state, meta = load_checkpoint(args.restart)
             start_it = int(meta.get('iteration', 0)) + 1
             expected_hash = meta.get('config_hash')
+            expected_core = meta.get('core_config')
         except Exception as e:
             print(f"Failed to load checkpoint {args.restart}: {e}")
             state = allocate_state(cfg.nx, cfg.ny)
@@ -128,14 +130,20 @@ def main(argv: list[str] | None = None) -> int:
     if expected_hash is not None:
         live_hash = config_hash(cfg)
         if live_hash != expected_hash:
+            live_core = config_core_dict(cfg)
             print(f"ERROR: Configuration mismatch with checkpoint.\n  checkpoint hash: {expected_hash}\n  current    hash: {live_hash}")
-            # Provide a minimal diff hint: which semantic keys differ
-            # (exclude runtime fields)
-            diffs = []
-            for k, v in sorted(vars(cfg).items()):
-                if k in EXCLUDED_RUNTIME_FIELDS or k.startswith('_'):
-                    continue
-                # best effort: compare to meta? (meta doesn't carry full cfg) so only notify user
+            if isinstance(expected_core, dict):
+                added = sorted(k for k in live_core.keys() if k not in expected_core)
+                removed = sorted(k for k in expected_core.keys() if k not in live_core)
+                changed = sorted(k for k in live_core.keys() if k in expected_core and live_core[k] != expected_core[k])
+                if added:
+                    print("  Added keys:", ", ".join(added))
+                if removed:
+                    print("  Removed keys:", ", ".join(removed))
+                if changed:
+                    print("  Changed:")
+                    for k in changed:
+                        print(f"    {k}: checkpoint={expected_core[k]!r} current={live_core[k]!r}")
             print("Aborting run. Adjust parameters or use matching checkpoint config.")
             return 3
 

@@ -19,7 +19,7 @@ from typing import Any, Dict, cast
 import numpy as np
 
 from ..core.ghost_fields import State
-from ..config.model import config_hash, HASH_LEN
+from ..config.model import config_hash, HASH_LEN, config_core_dict
 
 
 def _hash_config(cfg: Any) -> str:  # backwards alias; delegated to config_hash
@@ -59,6 +59,7 @@ def save_checkpoint(path: str, state: State, iteration: int, sim_time: float, cf
         'schema_version': 2,
     'hash_len': HASH_LEN,
     'git_commit': git_rev,
+        'core_config': config_core_dict(cfg),
     }
     tmp_fd, tmp_path = tempfile.mkstemp(suffix='.tmp', dir=os.path.dirname(path) or '.')
     try:

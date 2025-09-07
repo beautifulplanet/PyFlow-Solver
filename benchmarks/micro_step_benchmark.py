@@ -17,8 +17,9 @@ def run(steps: int, nx: int, ny: int) -> float:
     st = allocate_state(nx, ny)
     drv = SimulationDriver(cfg, st, ResidualManager())
     t0 = time.time()
+    gen = drv.run(max_steps=steps)
     for _ in range(steps):
-        next(drv.run(max_steps=1))
+        next(gen)
     return time.time() - t0
 
 
