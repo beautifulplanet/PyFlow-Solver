@@ -1,14 +1,18 @@
 from __future__ import annotations
-import numpy as np
+
 import math
-from typing import Dict, Any
-from ..core.ghost_fields import interior_view, State
+from typing import Any
+
+import numpy as np
+
+from ..core.ghost_fields import State, interior_view
 from ..logging.structured import JsonlLogger
-from ..numerics.fluid_ops import divergence as div_op, apply_pressure_correction
-from ..numerics.operators.advection import advect_upwind, advect_quick
+from ..numerics.fluid_ops import divergence as div_op
+from ..numerics.operators.advection import advect_quick, advect_upwind
 from .pressure_solver import solve_pressure_poisson
 
-def step(config, state: State, tracker, iteration: int) -> tuple[State, Dict[str,float], Dict[str, Any]]:
+
+def step(config, state: State, tracker, iteration: int) -> tuple[State, dict[str,float], dict[str, Any]]:
     diagnostics_enabled = getattr(config, 'diagnostics', True)
     nx = interior_view(state.fields['u']).shape[1]
     ny = interior_view(state.fields['u']).shape[0]
@@ -164,11 +168,12 @@ def step(config, state: State, tracker, iteration: int) -> tuple[State, Dict[str
         assert abs(p_interior.flat[0]) < 1e-10, "Invariant failed: reference pressure cell not ~0"
     # Structured logging (optional)
     log_path = getattr(config, 'log_path', None)
-    if log_path:
+    log_stream = getattr(config, 'log_stream', None)
+    if log_path or log_stream:
         logger = getattr(config, '_logger_instance', None)
         if logger is None:
-            logger = JsonlLogger(log_path)
-            setattr(config, '_logger_instance', logger)
+            logger = JsonlLogger(path=log_path, stream=log_stream)
+            config._logger_instance = logger
         logger.log({'type':'step','it':iteration,'dt':dt,'CFL':current_cfl,'Ru':Ru,'Rv':Rv,'continuity':continuity,'Rp_it':pressure_diag.get('Rp_iterations',0),'nan':nan_detected})
         if nan_detected:
             logger.log({'type':'error','it':iteration,'reason':'nan_detected'})

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Project PyFlow-Measure: Benchmark Harness.
 
 Purpose:
@@ -20,13 +21,16 @@ Design Notes:
     * Uses existing SimulationDriver for consistency.
     * Does NOT attempt micro-optimizations; purely observational.
 """
-import argparse, json, time
+import argparse
+import json
+import time
 from types import SimpleNamespace
-from typing import List, Dict, Any
+from typing import Any
 
-from ..drivers.simulation_driver import SimulationDriver
 from ..core.ghost_fields import allocate_state
+from ..drivers.simulation_driver import SimulationDriver
 from ..residuals.manager import ResidualManager
+
 
 def make_config(nx: int, ny: int, *, Re: float = 100.0, lid_velocity: float = 0.0, disable_advection: bool = True, enable_jacobi_pc: bool = True):
     # Minimal config object with attributes consumed by step() / pressure solver
@@ -48,7 +52,7 @@ def make_config(nx: int, ny: int, *, Re: float = 100.0, lid_velocity: float = 0.
     )
     return cfg
 
-def run_case(nx: int, ny: int, steps: int) -> Dict[str, Any]:
+def run_case(nx: int, ny: int, steps: int) -> dict[str, Any]:
     cfg = make_config(nx, ny)
     state = allocate_state(nx, ny)
     tracker = ResidualManager()
@@ -71,7 +75,7 @@ def run_case(nx: int, ny: int, steps: int) -> Dict[str, Any]:
         'avg_cg_iterations': avg_cg,
     }
 
-def benchmark(grids: List[int], steps: int) -> Dict[str, Any]:
+def benchmark(grids: list[int], steps: int) -> dict[str, Any]:
     runs = [run_case(n, n, steps) for n in grids]
     return {
         'benchmark': 'lid_driven_cavity',
@@ -79,7 +83,7 @@ def benchmark(grids: List[int], steps: int) -> Dict[str, Any]:
         'runs': runs,
     }
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description='PyFlow Benchmark Harness')
     ap.add_argument('--grids', type=str, default='32,64,128,256', help='Comma-separated grid sizes (nx=ny)')
     ap.add_argument('--steps', type=int, default=100, help='Number of steps per grid')
@@ -97,4 +101,4 @@ def main(argv: List[str] | None = None) -> int:
 if __name__ == '__main__':  # pragma: no cover
     raise SystemExit(main())
 
-__all__ = ["benchmark", "run_case", "make_config"]
+__all__ = ["benchmark", "make_config", "run_case"]

@@ -1,6 +1,9 @@
 from __future__ import annotations
+
 import numpy as np
-from ..core.ghost_fields import interior_view, State
+
+from ..core.ghost_fields import State, interior_view
+
 
 def _divergence_impl(u: np.ndarray, v: np.ndarray, dx: float, dy: float) -> np.ndarray:
     """

@@ -1,7 +1,11 @@
 from __future__ import annotations
+
+import hashlib
+import json
+from typing import Any, Literal
+
 from pydantic import BaseModel, Field, field_validator, model_validator
-from typing import Optional, Literal, List, Any
-import json, hashlib
+
 
 class ConfigError(ValueError):
     pass
@@ -29,21 +33,21 @@ class SimulationConfig(BaseModel):
 
     # Diagnostics / logging
     diagnostics: bool = True
-    log_path: Optional[str] = None
-    log_stream: Optional[Any] = None  # for in-memory tests; not hashed
+    log_path: str | None = None
+    log_stream: Any | None = None  # for in-memory tests; not hashed
 
     # Checkpointing
-    checkpoint_interval: Optional[int] = Field(None, ge=1)
-    emergency_checkpoint_path: Optional[str] = None
+    checkpoint_interval: int | None = Field(None, ge=1)
+    emergency_checkpoint_path: str | None = None
 
     # Reproducibility
-    seed: Optional[int] = Field(None, ge=0, le=2**32 - 1)
+    seed: int | None = Field(None, ge=0, le=2**32 - 1)
 
     # Versioning
     schema_version: int = 1
 
     # Reserved future fields (placeholders)
-    turbulence_model: Optional[str] = Field(None, description="Future turbulence closure identifier")
+    turbulence_model: str | None = Field(None, description="Future turbulence closure identifier")
 
     @field_validator('advection_scheme')
     @classmethod
@@ -52,7 +56,7 @@ class SimulationConfig(BaseModel):
 
     @model_validator(mode='after')
     def _cross_field(self):
-        issues: List[str] = []
+        issues: list[str] = []
         if self.disable_advection and self.advection_scheme not in ('upwind','quick'):
             issues.append("disable_advection set but advection_scheme invalid")
         if self.log_path and self.log_stream is not None:
@@ -91,4 +95,4 @@ class SimulationConfig(BaseModel):
             'hash': self.config_hash
         }
 
-__all__ = ["SimulationConfig", "ConfigError"]
+__all__ = ["ConfigError", "SimulationConfig"]

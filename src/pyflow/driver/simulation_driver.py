@@ -26,16 +26,18 @@ Usage Example:
 The driver does NOT perform visualization or CLI parsing; those are higher layers.
 """
 from __future__ import annotations
-from dataclasses import dataclass, field
+
 import time
-import math
-from typing import Callable, Dict, Any, Generator, Optional
+from collections.abc import Callable, Generator
+from dataclasses import dataclass
+from typing import Any
+
 import numpy as np
 
-from ..core.ghost_fields import allocate_state, interior_view, State
-from ..solvers.solver import step as core_step
+from ..core.ghost_fields import State, allocate_state, interior_view
 from ..numerics.fluid_ops import divergence as div_op
 from ..residuals.manager import ResidualManager
+from ..solvers.solver import step as core_step
 
 # ---------------------------------------------------------------------------
 # Configuration Dataclasses
@@ -66,8 +68,8 @@ class DriverConfig:
     stop_on_steady: bool = True
     save_interval: int = 0  # placeholder for future snapshot system
     # Callback signatures: (driver, iteration, state) -> None / modifications in-place
-    pre_step: Optional[Callable[["SimulationDriver", int, State], None]] = None
-    post_step: Optional[Callable[["SimulationDriver", int, State], None]] = None
+    pre_step: Callable[[SimulationDriver, int, State], None] | None = None
+    post_step: Callable[[SimulationDriver, int, State], None] | None = None
 
 # ---------------------------------------------------------------------------
 # Utility Functions
@@ -83,14 +85,14 @@ def mean_free_stats(field: np.ndarray) -> tuple[float, float]:
 # ---------------------------------------------------------------------------
 
 class SimulationDriver:
-    def __init__(self, driver_cfg: DriverConfig, physics_cfg: Optional[PhysicsConfig] = None):
+    def __init__(self, driver_cfg: DriverConfig, physics_cfg: PhysicsConfig | None = None):
         self.driver_cfg = driver_cfg
         self.physics_cfg = physics_cfg or PhysicsConfig()
         self.state: State = allocate_state(driver_cfg.nx, driver_cfg.ny)
         self.tracker = ResidualManager()
-        self._start_wall: Optional[float] = None
+        self._start_wall: float | None = None
         self._steady_detected: bool = False
-        self._steady_iteration: Optional[int] = None
+        self._steady_iteration: int | None = None
 
     # Public properties -----------------------------------------------------
     @property
@@ -98,7 +100,7 @@ class SimulationDriver:
         return self._steady_detected
 
     @property
-    def steady_iteration(self) -> Optional[int]:
+    def steady_iteration(self) -> int | None:
         return self._steady_iteration
 
     @property
@@ -108,7 +110,7 @@ class SimulationDriver:
         return time.time() - self._start_wall
 
     # Core run generator ----------------------------------------------------
-    def run(self) -> Generator[Dict[str, Any], None, None]:
+    def run(self) -> Generator[dict[str, Any], None, None]:
         self._start_wall = time.time()
         cfg = self.driver_cfg
         physics = self.physics_cfg
@@ -162,8 +164,8 @@ class SimulationDriver:
 
         # End loop (if not broken by steady)
 
-    def _build_payload(self, iteration: int, residuals: Dict[str, float], diag: Dict[str, Any],
-                       div_mean: float, div_mf: float, steady: bool, steady_slope: Optional[float]) -> Dict[str, Any]:
+    def _build_payload(self, iteration: int, residuals: dict[str, float], diag: dict[str, Any],
+                       div_mean: float, div_mf: float, steady: bool, steady_slope: float | None) -> dict[str, Any]:
         return {
             'iteration': iteration,
             'state': self.state,  # reference (no copy)
@@ -182,8 +184,8 @@ def create_default_driver() -> SimulationDriver:
     return SimulationDriver(DriverConfig(), PhysicsConfig())
 
 __all__ = [
-    'PhysicsConfig',
     'DriverConfig',
+    'PhysicsConfig',
     'SimulationDriver',
     'create_default_driver'
 ]

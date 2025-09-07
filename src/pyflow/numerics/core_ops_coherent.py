@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Coherent discrete differential operators (forward/backward pairing).
 
 Goal:
@@ -29,15 +30,16 @@ Edge cases:
     - nx<2 or ny<2 ⇒ return zeros (degenerate domain).
 """
 from dataclasses import dataclass
+
 import numpy as np
 
 Array2D = np.ndarray
 
 __all__ = [
-    'gradient_coherent',
-    'divergence_coherent',
-    'laplacian_coherent',
     'coherence_diagnostics',
+    'divergence_coherent',
+    'gradient_coherent',
+    'laplacian_coherent',
 ]
 
 def gradient_coherent(p: Array2D, dx: float, dy: float) -> tuple[Array2D, Array2D]:

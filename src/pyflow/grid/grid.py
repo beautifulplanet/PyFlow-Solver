@@ -5,7 +5,9 @@ that can later be satisfied by stretched or unstructured meshes. The solver
 currently assumes uniform spacing; this layer centralizes that assumption.
 """
 from __future__ import annotations
+
 from dataclasses import dataclass
+
 
 @dataclass(slots=True)
 class UniformGrid:

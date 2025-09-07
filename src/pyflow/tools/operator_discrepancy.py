@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Operator Discrepancy Analysis Tool (Phase 3 Diagnostics)
 
 Compares the legacy assembled pressure matrix (negative Laplacian with
@@ -11,10 +12,12 @@ Usage (from repo root):
     python -m pyflow.tools.operator_discrepancy --nx 16 --ny 16 --dx 1 --dy 1
 """
 import argparse
+
 import numpy as np
 import scipy.sparse as sp
-from pyflow.solvers.pressure_solver import assemble_negative_laplacian
+
 from pyflow.numerics.mf_ops import build_laplacian_matrix_from_ops
+from pyflow.solvers.pressure_solver import assemble_negative_laplacian
 
 
 def build_matrix_free_equivalent(nx:int, ny:int, dx:float, dy:float) -> sp.csr_matrix:
@@ -137,7 +140,7 @@ def main():
             mf_row = A_mf_neg.getrow(k)
             diff_row = D_equiv.getrow(k)
             def row_to_dict(r):
-                return {int(c): float(v) for c,v in zip(r.indices, r.data)}
+                return {int(c): float(v) for c,v in zip(r.indices, r.data, strict=False)}
             print(f"Row {k}:")
             print("  legacy:", row_to_dict(leg_row))
             print("  -L    :", row_to_dict(mf_row))

@@ -1,16 +1,16 @@
 from __future__ import annotations
-import os
+
 import numpy as np
 import scipy.sparse as sp
 import scipy.sparse.linalg as spla
-from ..core.ghost_fields import interior_view, State
-from ..numerics.core_ops_coherent import (
-    gradient_coherent as gradient,
-    divergence_coherent as divergence,
-    laplacian_coherent
-)
+
+from ..core.ghost_fields import State, interior_view
 from ..linear_solvers.interface import solve
 from ..linear_solvers.preconditioners import jacobi_preconditioner
+from ..numerics.core_ops_coherent import divergence_coherent as divergence
+from ..numerics.core_ops_coherent import gradient_coherent as gradient
+from ..numerics.core_ops_coherent import laplacian_coherent
+
 
 def assemble_negative_laplacian(nx: int, ny: int, dx: float, dy: float):
     """Assemble sparse matrix A = -Laplace operator (SPD) with homogeneous Neumann-like

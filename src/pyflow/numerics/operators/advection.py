@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def quick_face_interpolation_1d(phi, i, flow_positive):
     """
     Compute QUICK face value at the face between i and i+1 in 1D.

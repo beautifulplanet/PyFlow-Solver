@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """PyFlow Phase 2 CLI – control layer over SimulationDriver.
 
 Adds:
@@ -19,13 +20,16 @@ Streaming JSON line schema (stable draft v1):
         "diagnostics": {... solver extras ...}
     }
 """
-import argparse, json, sys
-from typing import Any
-from .drivers.simulation_driver import SimulationDriver
-from .core.ghost_fields import allocate_state
-from .residuals.manager import ResidualManager
-from .config.model import SimulationConfig, ConfigError
+import argparse
+import json
+import sys
+
 from pydantic import ValidationError
+
+from .config.model import ConfigError, SimulationConfig
+from .core.ghost_fields import allocate_state
+from .drivers.simulation_driver import SimulationDriver
+from .residuals.manager import ResidualManager
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -75,7 +79,7 @@ def main(argv: list[str] | None = None) -> int:
         # Map sentinel 0 -> None before constructing config
         _ck_int = None
         if hasattr(args, 'checkpoint_interval'):
-            ci = getattr(args, 'checkpoint_interval')
+            ci = args.checkpoint_interval
             if ci not in (None, 0):
                 _ck_int = ci
         sim_cfg = SimulationConfig(
@@ -129,7 +133,7 @@ def main(argv: list[str] | None = None) -> int:
 
     json_mode = getattr(args, 'json_stream', False)
     if json_mode:
-        setattr(sim_cfg, 'force_quiet', True)
+        sim_cfg.force_quiet = True
     continuity_threshold = getattr(args, 'continuity_threshold', None)
     max_steps = getattr(args, 'steps', 0)
 
@@ -139,7 +143,7 @@ def main(argv: list[str] | None = None) -> int:
     last_diag = None; last_state = None; last_residuals = None
     try:
         # Use sanitized interval (original 0 replaced with None)
-        runtime_ck_int = None if getattr(args, 'checkpoint_interval', None) in (None, 0) else getattr(args, 'checkpoint_interval')
+        runtime_ck_int = None if getattr(args, 'checkpoint_interval', None) in (None, 0) else args.checkpoint_interval
         for st, residuals, diag in driver.run(max_steps=max_steps,
                                               start_iteration=start_it,
                                               progress=(args.progress and not json_mode),
